@@ -1,14 +1,18 @@
 /* ==============================================================================
    DECISION TREE CLASSIFIER · DECK DE PRESENTACIÓN TÉCNICA (IA 2026-2)
-   Diseño de Diapositivas PPT · Jerarquía Clara, Sin Desbordamiento, Texto Fluido
+   Arquitectura Teórico-Práctica Sincronizada 1:1 con Jupyter Notebook
    ============================================================================== */
 
 :root {
   --bg-deep: #080c14;
-  --bg-surface: #0f172a;
+  --bg-surface: #0e1626;
   --bg-card: #131c31;
-  --bg-card-hover: #192540;
+  --bg-card-hover: #18233c;
+  --bg-code: #0a0f1d;
+  --bg-output: #090e1a;
+  
   --border-subtle: #1e293b;
+  --border-light: rgba(255, 255, 255, 0.08);
   --border-focus: #38bdf8;
   
   --text-primary: #f8fafc;
@@ -16,13 +20,14 @@
   --text-muted: #64748b;
 
   --accent-cyan: #38bdf8;
-  --accent-cyan-glow: rgba(56, 189, 248, 0.15);
+  --accent-cyan-glow: rgba(56, 189, 248, 0.18);
   --accent-emerald: #10b981;
-  --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+  --accent-emerald-glow: rgba(16, 185, 129, 0.18);
   --accent-amber: #f59e0b;
+  --accent-amber-glow: rgba(245, 158, 11, 0.18);
   --accent-rose: #f43f5e;
-  --accent-rose-glow: rgba(244, 63, 94, 0.15);
-  --accent-indigo: #6366f1;
+  --accent-rose-glow: rgba(244, 63, 94, 0.18);
+  --accent-indigo: #818cf8;
 
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Fira Code', monospace;
@@ -46,7 +51,7 @@ html, body {
 }
 
 /* ==============================================================================
-   ESTRUCTURA PRINCIPAL DE PRESENTACIÓN
+   ESTRUCTURA PRINCIPAL DEL DECK
    ============================================================================== */
 
 .deck-container {
@@ -55,21 +60,21 @@ html, body {
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 60%),
-              radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.06) 0%, transparent 60%),
+              radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
               var(--bg-deep);
 }
 
 /* Header Superior Fijo */
 .deck-header {
-  height: 56px;
-  min-height: 56px;
-  padding: 0 2rem;
+  height: 52px;
+  min-height: 52px;
+  padding: 0 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-subtle);
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(14, 22, 38, 0.88);
   backdrop-filter: blur(12px);
   z-index: 100;
   flex-shrink: 0;
@@ -82,15 +87,15 @@ html, body {
 }
 
 .brand-icon {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   background: linear-gradient(135deg, #0284c7, #38bdf8);
-  border-radius: 8px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  box-shadow: 0 0 12px var(--accent-cyan-glow);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
 }
 
 .brand-title {
@@ -115,7 +120,7 @@ html, body {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.15rem;
 }
 
 .meta-pill {
@@ -148,359 +153,126 @@ html, body {
 
 /* Barra de Progreso Superior */
 .deck-progress-bar {
-  position: absolute;
-  top: 55px;
-  left: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
+  background: linear-gradient(90deg, #38bdf8, #10b981, #6366f1);
   transition: width 0.35s ease;
   z-index: 101;
 }
 
-/* KaTeX Overrides para evitar saltos o desbordamiento */
-.katex {
-  font-size: 1.02em;
-  text-rendering: auto;
-}
-
-.katex-display {
-  margin: 0.25em 0 !important;
-}
-
 /* ==============================================================================
-   VIEWPORT Y DIAPOSITIVAS (PPT SLIDES)
+   VIEWPORT DE DIAPOSITIVAS
    ============================================================================== */
 
 .slides-viewport {
   flex: 1;
   position: relative;
   overflow: hidden;
-  width: 100%;
-  height: calc(100vh - 116px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
 }
 
 .slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 1.5rem 3.5rem;
+  top: 0.85rem;
+  left: 1.75rem;
+  right: 1.75rem;
+  bottom: 0.85rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* NUNCA center: evita que el cuerpo tape el encabezado */
   opacity: 0;
   pointer-events: none;
-  transform: translateX(30px) scale(0.99);
+  transform: translateX(40px);
   transition: var(--transition-slide);
-  box-sizing: border-box;
-  overflow-y: auto; /* Permite scroll seguro en resoluciones pequeñas */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-subtle) transparent;
-}
-
-.slide::-webkit-scrollbar {
-  width: 5px;
-}
-
-.slide::-webkit-scrollbar-thumb {
-  background: var(--border-subtle);
-  border-radius: 4px;
 }
 
 .slide.active {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(0) scale(1);
-  z-index: 10;
+  transform: translateX(0);
 }
 
 .slide.prev {
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-30px) scale(0.99);
+  transform: translateX(-40px);
 }
 
-/* Caso especial para diapositiva 1 (Portada centrada) */
-.slide#slide-1 {
-  justify-content: center;
-  align-items: center;
-}
-
-/* ==============================================================================
-   ENCABEZADO DE DIAPOSITIVA (FIJO Y NUNCA TAPADO)
-   ============================================================================== */
-
+/* Cabecera de Diapositiva */
 .slide-header {
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.85rem;
   flex-shrink: 0;
-  position: relative;
-  z-index: 5;
 }
 
 .slide-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent-cyan);
-  margin-bottom: 0.2rem;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 5px;
+  margin-bottom: 0.3rem;
 }
 
 .slide-title {
-  font-size: 1.75rem;
+  font-size: 1.55rem;
   font-weight: 800;
-  letter-spacing: -0.025em;
   color: #fff;
+  letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .slide-subtitle {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
-  margin-top: 0.25rem;
-  font-weight: 400;
-  max-width: 950px;
+  margin-top: 0.2rem;
   line-height: 1.4;
 }
 
 /* ==============================================================================
-   CUERPO DE DIAPOSITIVA & TARJETAS
-   ============================================================================== */
-
-.slide-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 1.1rem;
-  min-height: 0;
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: stretch;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  align-items: stretch;
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 1.25rem 1.45rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-}
-
-.card-title {
-  font-size: 1.02rem;
-  font-weight: 700;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.card-title i {
-  color: var(--accent-cyan);
-}
-
-.card-text {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  text-align: left;
-}
-
-/* ==============================================================================
-   LISTAS Y TEXTO FLUIDO (CORRECCIÓN DE ESPACIOS EXTRAÑOS)
-   ============================================================================== */
-
-.bullet-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-/* display: block asegura que el texto dentro del párrafo fluya de forma natural */
-.bullet-list li {
-  position: relative;
-  padding-left: 1.35rem;
-  font-size: 0.87rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  display: block;
-  text-align: left;
-}
-
-.bullet-list li::before {
-  content: "•";
-  position: absolute;
-  left: 0.2rem;
-  top: -0.05rem;
-  color: var(--accent-cyan);
-  font-size: 1.15rem;
-  line-height: 1.5;
-}
-
-.bullet-list li b {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin-right: 0.2rem;
-}
-
-.bullet-list li code {
-  display: inline;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-size: 0.82rem;
-  background: rgba(15, 23, 42, 0.8);
-  font-family: var(--font-mono);
-}
-
-/* ==============================================================================
-   TARJETAS MATEMÁTICAS & FORMULAS (KATEX)
-   ============================================================================== */
-
-.math-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.8));
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  margin: 0.2rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.04);
-}
-
-.math-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--accent-cyan);
-  margin-bottom: 0.25rem;
-}
-
-.math-formula {
-  font-size: 1.15rem;
-  color: #f8fafc;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-/* ==============================================================================
-   FILA DE MÉTRICAS (STAT ROW)
-   ============================================================================== */
-
-.stat-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-top: 0;
-  flex-shrink: 0;
-}
-
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.stat-num {
-  font-size: 1.65rem;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  color: var(--accent-cyan);
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* ==============================================================================
-   CONTENEDOR DE GRÁFICOS (CHART.JS)
-   ============================================================================== */
-
-.chart-container {
-  position: relative;
-  width: 100%;
-  height: 215px; /* Altura calibrada para no empujar tarjetas fuera de la pantalla */
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 10px;
-  padding: 0.6rem 0.8rem;
-}
-
-/* ==============================================================================
-   PORTADA (SLIDE 1)
+   PORTADA EJECUTIVA (SLIDE 1)
    ============================================================================== */
 
 .title-slide-content {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.35rem;
+  justify-content: center;
+  height: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
 }
 
 .title-badge-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.95rem;
-  border-radius: 9999px;
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--accent-cyan);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  width: fit-content;
+  margin-bottom: 1.25rem;
 }
 
 .main-title {
-  font-size: 3rem;
+  font-size: 2.85rem;
   font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-  background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 1rem;
 }
 
 .main-title span {
@@ -512,176 +284,362 @@ html, body {
 .title-desc {
   font-size: 1.08rem;
   color: var(--text-secondary);
-  line-height: 1.55;
-  max-width: 760px;
+  line-height: 1.6;
+  max-width: 880px;
+  margin-bottom: 2rem;
 }
 
 .metadata-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  width: 100%;
-  margin-top: 0.5rem;
 }
 
 .meta-box {
-  background: rgba(19, 28, 49, 0.8);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  padding: 0.9rem;
-  text-align: left;
+  border-radius: 12px;
+  padding: 1.15rem;
+  transition: all 0.25s ease;
+}
+
+.meta-box:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .meta-box-label {
-  font-size: 0.68rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
   text-transform: uppercase;
-  font-weight: 700;
+  color: var(--text-muted);
   letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
 }
 
 .meta-box-value {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--text-primary);
-  font-weight: 600;
-  margin-top: 0.25rem;
+  line-height: 1.35;
 }
 
 /* ==============================================================================
-   SIMULADOR CLÍNICO (SLIDE 9)
+   LAYOUT DE 4 CUADRANTES (SYNCHRONIZED 4-QUADRANT GRID)
    ============================================================================== */
 
-.sim-grid {
+.slide-quad-grid {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 1.5rem;
-  align-items: stretch;
+  grid-template-columns: 1.08fr 0.92fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0; /* Crucial para evitar desbordamiento */
 }
 
-.sim-controls-card {
+/* Tarjetas de Cuadrante */
+.quad-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  min-height: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.sim-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.quad-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
-.sim-label-row {
+/* Cabecera del Cuadrante */
+.quad-header {
+  padding: 0.65rem 1rem;
+  background: rgba(14, 22, 38, 0.7);
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  justify-content: space-between;
+  flex-shrink: 0;
 }
 
-.sim-badge-val {
-  font-family: var(--font-mono);
+.quad-title {
   font-size: 0.78rem;
-  color: var(--accent-cyan);
-  background: rgba(56, 189, 248, 0.1);
-  padding: 0.1rem 0.45rem;
-  border-radius: 5px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
 }
 
-.sim-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
+.quad-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.quad-body {
+  padding: 0.85rem 1rem;
+  flex: 1;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Scrollbars estilizados */
+.quad-body::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 5px;
   height: 5px;
+}
+.quad-body::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
-  background: var(--border-subtle);
+}
+
+/* ==============================================================================
+   CUADRANTE 1: CÓDIGO ATÓMICO (JUPYTER IN[X])
+   ============================================================================== */
+
+.code-container {
+  background: var(--bg-code);
+  height: 100%;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #e2e8f0;
+  overflow: auto;
+  white-space: pre;
+}
+
+.code-keyword { color: #f43f5e; font-weight: 600; }
+.code-fn { color: #38bdf8; font-weight: 500; }
+.code-str { color: #10b981; }
+.code-comment { color: #64748b; font-style: italic; }
+.code-num { color: #f59e0b; }
+.code-var { color: #e2e8f0; }
+
+/* ==============================================================================
+   CUADRANTE 2: RESULTADO REAL (JUPYTER OUT[X])
+   ============================================================================== */
+
+.output-container {
+  background: var(--bg-output);
+  height: 100%;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #38bdf8;
+  overflow: auto;
+  white-space: pre-wrap;
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.output-success { color: #10b981; }
+.output-warn { color: #f59e0b; }
+.output-danger { color: #f43f5e; }
+.output-highlight { color: #fff; font-weight: 700; background: rgba(56, 189, 248, 0.12); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+/* ==============================================================================
+   CUADRANTE 3: MECÁNICA INTERNA & JUSTIFICACIÓN
+   ============================================================================== */
+
+.theory-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.theory-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.theory-point b {
+  color: #fff;
+}
+
+.theory-bullet {
+  color: var(--accent-cyan);
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.math-badge {
+  background: rgba(14, 22, 38, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  margin: 0.3rem 0;
+  text-align: center;
+}
+
+.math-badge-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+/* ==============================================================================
+   CUADRANTE 4: VISUALIZADOR INTERACTIVO / MICRO-ANIMACIÓN
+   ============================================================================== */
+
+.anim-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.anim-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.anim-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--accent-cyan);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.anim-btn:hover {
+  background: var(--accent-cyan);
+  color: #080c14;
+  box-shadow: 0 0 12px var(--accent-cyan-glow);
+}
+
+.anim-btn.btn-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: var(--accent-emerald);
+}
+.anim-btn.btn-emerald:hover {
+  background: var(--accent-emerald);
+  color: #080c14;
+}
+
+.anim-btn.btn-amber {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: var(--accent-amber);
+}
+.anim-btn.btn-amber:hover {
+  background: var(--accent-amber);
+  color: #080c14;
+}
+
+.anim-btn.btn-rose {
+  background: rgba(244, 63, 94, 0.12);
+  border-color: rgba(244, 63, 94, 0.35);
+  color: var(--accent-rose);
+}
+.anim-btn.btn-rose:hover {
+  background: var(--accent-rose);
+  color: #fff;
+}
+
+/* Barras de datos y visualizadores */
+.data-stream-box {
+  width: 100%;
+  height: 48px;
+  background: rgba(10, 15, 29, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.data-dot {
+  width: 8px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--text-muted);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.data-dot.train { background: var(--accent-cyan); }
+.data-dot.test { background: var(--accent-amber); }
+.data-dot.healthy { background: var(--accent-emerald); }
+.data-dot.sick { background: var(--accent-rose); }
+.data-dot.null-drop { background: #e11d48; transform: scaleY(0.2); opacity: 0.3; }
+
+/* Control Sliders */
+.anim-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
   outline: none;
   cursor: pointer;
 }
-
-.sim-slider::-webkit-slider-thumb {
+.anim-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: var(--accent-cyan);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
-  transition: transform 0.1s;
-}
-
-.sim-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-}
-
-.sim-result-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.35rem;
-  background: var(--bg-card);
-  border-radius: 14px;
-  border: 1px solid var(--border-subtle);
-}
-
-.result-badge-display {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 1rem 1.15rem;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-.result-badge-display.healthy {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: var(--accent-emerald);
-}
-
-.result-badge-display.disease {
-  background: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.35);
-  color: var(--accent-rose);
-}
-
-.result-title {
-  font-size: 1.2rem;
-  font-weight: 800;
-}
-
-.result-desc {
-  font-size: 0.84rem;
-  color: var(--text-secondary);
-  margin-top: 0.2rem;
-}
-
-.path-trace-box {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  padding: 0.85rem;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: #cbd5e1;
-  line-height: 1.5;
+  box-shadow: 0 0 8px var(--accent-cyan-glow);
 }
 
 /* ==============================================================================
-   FOOTER / CONTROLADOR DE DIAPOSITIVAS
+   FOOTER / NAVEGADOR INFERIOR
    ============================================================================== */
 
 .deck-footer {
-  height: 60px;
-  min-height: 60px;
-  padding: 0 2rem;
+  height: 52px;
+  min-height: 52px;
+  padding: 0 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid var(--border-subtle);
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(14, 22, 38, 0.88);
   backdrop-filter: blur(12px);
   z-index: 100;
   flex-shrink: 0;
@@ -690,44 +648,41 @@ html, body {
 .footer-left {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .btn-nav {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 7px;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.45rem 1rem;
-  border-radius: 8px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-card);
-  color: var(--text-primary);
   transition: all 0.2s ease;
 }
 
 .btn-nav:hover:not(:disabled) {
-  border-color: var(--border-focus);
-  background: var(--bg-card-hover);
-  color: #fff;
+  background: var(--accent-cyan);
+  color: #080c14;
+  border-color: var(--accent-cyan);
 }
 
 .btn-nav:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .slide-counter {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  color: var(--accent-cyan);
-  padding: 0.3rem 0.75rem;
-  background: rgba(56, 189, 248, 0.08);
-  border-radius: 6px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--text-secondary);
 }
 
 .footer-center {
@@ -740,20 +695,16 @@ html, body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--border-subtle);
+  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
-.dot-indicator:hover {
-  background: var(--text-muted);
-}
-
 .dot-indicator.active {
   width: 22px;
-  border-radius: 5px;
+  border-radius: 4px;
   background: var(--accent-cyan);
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 8px var(--accent-cyan-glow);
 }
 
 .footer-right {
@@ -763,39 +714,33 @@ html, body {
 }
 
 .keyboard-hint {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.4rem;
 }
 
 .kbd {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  padding: 0.12rem 0.38rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
+  padding: 0.12rem 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
   color: var(--text-secondary);
 }
 
 /* ==============================================================================
-   RESPONSIVIDAD Y AJUSTES
+   RESPONSIVIDAD & PANTALLAS PEQUEÑAS
    ============================================================================== */
-
 @media (max-width: 1024px) {
-  .slide {
-    padding: 1.25rem 1.75rem;
-  }
-  .grid-2, .grid-3 {
+  .slide-quad-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-rows: auto auto auto auto;
+    overflow-y: auto;
   }
-  .main-title {
-    font-size: 2.2rem;
-  }
-  .slide-title {
-    font-size: 1.5rem;
+  .slide {
+    overflow-y: auto;
   }
 }

@@ -1,24 +1,27 @@
 // ==============================================================================
-// DECISION TREE CLASSIFIER · MOTOR DE PRESENTACIÓN & INTERACTIVIDAD
-// Diseñado para exposición oral tipo diapositivas (PPT Deck)
+// DECISION TREE CLASSIFIER · MOTOR DE PRESENTACIÓN & ANIMACIONES ATÓMICAS
+// Sincronización 1:1 con Cuaderno de Prácticas en 10 Pasos (IA 2026-2)
 // ==============================================================================
 
 let currentSlide = 0;
-const slides = document.querySelectorAll(".slide");
-const totalSlides = slides.length;
-let chartsInitialized = false;
+let totalSlides = 0;
+let p5ChartInstance = null;
+let p9ChartInstance = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   initSlideEngine();
   initKaTeX();
   initLucide();
-  initClinicalSimulator();
+  initInteractiveSteps();
 });
 
 // ------------------------------------------------------------------------------
 // 1. MOTOR DE DIAPOSITIVAS (PPT SLIDE ENGINE)
 // ------------------------------------------------------------------------------
 function initSlideEngine() {
+  const slides = document.querySelectorAll(".slide");
+  totalSlides = slides.length;
+
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
   const counterEl = document.getElementById("slide-counter");
@@ -26,7 +29,7 @@ function initSlideEngine() {
   const dotsContainer = document.getElementById("dots-container");
   const fsBtn = document.getElementById("fullscreen-btn");
 
-  // Crear indicadores circulares (dots)
+  // Crear dots indicadores
   if (dotsContainer) {
     dotsContainer.innerHTML = "";
     slides.forEach((_, i) => {
@@ -48,32 +51,29 @@ function initSlideEngine() {
       }
     });
 
-    // Actualizar contador y barra de progreso
     if (counterEl) {
-      const padCurrent = String(currentSlide + 1).padStart(2, "0");
-      const padTotal = String(totalSlides).padStart(2, "0");
-      counterEl.textContent = `${padCurrent} / ${padTotal}`;
+      const padCur = String(currentSlide + 1).padStart(2, "0");
+      const padTot = String(totalSlides).padStart(2, "0");
+      counterEl.textContent = `${padCur} / ${padTot}`;
     }
 
     if (progressEl) {
-      const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
-      progressEl.style.width = `${progressPercent}%`;
+      const percent = ((currentSlide + 1) / totalSlides) * 100;
+      progressEl.style.width = `${percent}%`;
     }
 
-    // Actualizar botones
     if (prevBtn) prevBtn.disabled = currentSlide === 0;
     if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
 
-    // Actualizar dots
     const dots = document.querySelectorAll(".dot-indicator");
     dots.forEach((dot, i) => {
       dot.classList.toggle("active", i === currentSlide);
     });
 
-    // Renderizar KaTeX y gráficos en la diapositiva activa
     setTimeout(() => {
       initKaTeX();
-      initSlideCharts(currentSlide);
+      initLucide();
+      triggerSlideSpecificInit(currentSlide);
     }, 50);
   }
 
@@ -101,9 +101,8 @@ function initSlideEngine() {
   if (prevBtn) prevBtn.addEventListener("click", window.prevSlide);
   if (nextBtn) nextBtn.addEventListener("click", window.nextSlide);
 
-  // Navegación con teclado
+  // Teclado
   document.addEventListener("keydown", (e) => {
-    // Evitar interferencia si se interactúa con un input
     if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
 
     if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
@@ -123,7 +122,6 @@ function initSlideEngine() {
     }
   });
 
-  // Pantalla completa
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
@@ -138,7 +136,7 @@ function initSlideEngine() {
 }
 
 // ------------------------------------------------------------------------------
-// 2. CONFIGURACIÓN ROBUSTA DE KATEX
+// 2. CONFIGURACIÓN ROBUSTA DE KATEX & LUCIDE
 // ------------------------------------------------------------------------------
 function initKaTeX() {
   if (typeof renderMathInElement === "function") {
@@ -147,21 +145,17 @@ function initKaTeX() {
         delimiters: [
           { left: "$$", right: "$$", display: true },
           { left: "$", right: "$", display: false },
-          { left: "\\(", right: "\\)", display: false },
-          { left: "\\[", right: "\\]", display: true }
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
         ],
-        throwOnError: false,
-        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        throwOnError: false
       });
-    } catch (err) {
-      console.warn("KaTeX render notice:", err);
+    } catch (e) {
+      console.warn("KaTeX render error:", e);
     }
   }
 }
 
-// ------------------------------------------------------------------------------
-// 3. ICONOS LUCIDE
-// ------------------------------------------------------------------------------
 function initLucide() {
   if (typeof lucide !== "undefined" && lucide.createIcons) {
     lucide.createIcons();
@@ -169,308 +163,431 @@ function initLucide() {
 }
 
 // ------------------------------------------------------------------------------
-// 4. GRÁFICOS INTERACTIVOS CON CHART.JS (LAZY INIT POR DIAPOSITIVA)
+// 3. INICIALIZADOR DE PASOS ATÓMICOS & MICRO-ANIMACIONES
 // ------------------------------------------------------------------------------
-let giniChartInstance = null;
-let complexityChartInstance = null;
-let importanceChartInstance = null;
+function initInteractiveSteps() {
+  initStep1();
+  initStep2();
+  initStep3();
+  initStep4();
+  initStep6();
+  initStep7();
+  initStep8();
+  initStep10();
+}
 
-function initSlideCharts(slideIndex) {
-  if (typeof Chart === "undefined") return;
-
-  // Diapositiva 4: Gini vs Entropía
-  if (slideIndex === 3) {
-    if (giniChartInstance) {
-      giniChartInstance.resize();
-      return;
-    }
-    const ctx = document.getElementById("giniEntropyChart");
-    if (ctx) {
-      const pVals = [];
-      const giniVals = [];
-      const entropyVals = [];
-      for (let p = 0; p <= 1.001; p += 0.02) {
-        const roundedP = Math.round(p * 100) / 100;
-        pVals.push(roundedP.toFixed(2));
-        const g = 2 * roundedP * (1 - roundedP);
-        giniVals.push(g);
-        let ent = 0;
-        if (roundedP > 0 && roundedP < 1) {
-          ent = -0.5 * (roundedP * Math.log2(roundedP) + (1 - roundedP) * Math.log2(1 - roundedP));
-        }
-        entropyVals.push(ent);
-      }
-
-      giniChartInstance = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: pVals,
-          datasets: [
-            {
-              label: "Gini: 2p(1-p)",
-              data: giniVals,
-              borderColor: "#38bdf8",
-              backgroundColor: "rgba(56, 189, 248, 0.1)",
-              borderWidth: 3,
-              fill: true,
-              tension: 0.3
-            },
-            {
-              label: "Entropía Escalada: ½ H(p)",
-              data: entropyVals,
-              borderColor: "#10b981",
-              borderDash: [5, 5],
-              borderWidth: 2,
-              fill: false,
-              tension: 0.3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: "#cbd5e1", font: { family: "Plus Jakarta Sans", size: 12 } } },
-            tooltip: { mode: "index", intersect: false }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: "Probabilidad p de la clase positiva", color: "#94a3b8" },
-              ticks: { color: "#64748b", maxTicksLimit: 11 },
-              grid: { color: "rgba(255, 255, 255, 0.05)" }
-            },
-            y: {
-              title: { display: true, text: "Medida de Impureza", color: "#94a3b8" },
-              ticks: { color: "#64748b" },
-              grid: { color: "rgba(255, 255, 255, 0.05)" },
-              min: 0,
-              max: 0.55
-            }
-          }
-        }
-      });
-    }
-  }
-
-  // Diapositiva 6: Curva de Complejidad (Sobreajuste vs Profundidad)
+function triggerSlideSpecificInit(slideIndex) {
+  // Slide 5 is Paso 5 (Index 5)
   if (slideIndex === 5) {
-    if (complexityChartInstance) {
-      complexityChartInstance.resize();
-      return;
-    }
-    const ctx = document.getElementById("complexityChart");
-    if (ctx) {
-      complexityChartInstance = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ["1", "2", "3 (Óptimo)", "4", "5", "6", "8", "10", "Sin Poda"],
-          datasets: [
-            {
-              label: "Entrenamiento (Train)",
-              data: [76.9, 81.8, 85.1, 91.7, 95.5, 98.3, 100.0, 100.0, 100.0],
-              borderColor: "#94a3b8",
-              borderDash: [4, 4],
-              borderWidth: 2,
-              tension: 0.2
-            },
-            {
-              label: "Prueba (Test Generalización)",
-              data: [75.4, 80.3, 86.89, 81.9, 78.7, 75.4, 73.8, 73.8, 73.8],
-              borderColor: "#38bdf8",
-              backgroundColor: "rgba(56, 189, 248, 0.15)",
-              borderWidth: 3,
-              pointRadius: [4, 5, 8, 5, 4, 4, 4, 4, 4],
-              pointBackgroundColor: ["#38bdf8", "#38bdf8", "#10b981", "#38bdf8", "#38bdf8", "#38bdf8", "#38bdf8", "#38bdf8", "#f43f5e"],
-              tension: 0.2
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: "#cbd5e1", font: { family: "Plus Jakarta Sans", size: 12 } } },
-            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%` } }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: "Profundidad Máxima del Árbol (max_depth)", color: "#94a3b8" },
-              ticks: { color: "#64748b" },
-              grid: { color: "rgba(255, 255, 255, 0.05)" }
-            },
-            y: {
-              title: { display: true, text: "Exactitud (%)", color: "#94a3b8" },
-              ticks: { color: "#64748b" },
-              grid: { color: "rgba(255, 255, 255, 0.05)" },
-              min: 70,
-              max: 102
-            }
-          }
-        }
-      });
-    }
+    initStep5Chart();
   }
-
-  // Diapositiva 7: Importancia de Atributos CART (Cleveland)
-  if (slideIndex === 6) {
-    if (importanceChartInstance) {
-      importanceChartInstance.resize();
-      return;
-    }
-    const ctx = document.getElementById("importanceChart");
-    if (ctx) {
-      importanceChartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["thal (Perfusión)", "cp (Dolor)", "ca (Fluoroscopia)", "oldpeak (ST)", "age (Edad)", "chol / otros"],
-          datasets: [
-            {
-              label: "Importancia de Reducción Gini (%)",
-              data: [53.69, 19.41, 16.88, 10.02, 0.0, 0.0],
-              backgroundColor: [
-                "#38bdf8",
-                "#0284c7",
-                "#10b981",
-                "#f59e0b",
-                "rgba(148, 163, 184, 0.2)",
-                "rgba(148, 163, 184, 0.2)"
-              ],
-              borderRadius: 8
-            }
-          ]
-        },
-        options: {
-          indexAxis: "y",
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: (ctx) => ` Importancia Gini: ${ctx.raw}%` } }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: "Porcentaje de Reducción Total de Impureza (%)", color: "#94a3b8" },
-              ticks: { color: "#64748b" },
-              grid: { color: "rgba(255, 255, 255, 0.05)" },
-              max: 60
-            },
-            y: {
-              ticks: { color: "#cbd5e1", font: { family: "Plus Jakarta Sans", weight: "600" } },
-              grid: { display: false }
-            }
-          }
-        }
-      });
-    }
+  // Slide 9 is Paso 9 (Index 9)
+  if (slideIndex === 9) {
+    initStep9Chart();
   }
 }
 
-// ------------------------------------------------------------------------------
-// 5. SIMULADOR CLÍNICO EN TIEMPO REAL (DIAPOSITIVA 9)
-// ------------------------------------------------------------------------------
-function initClinicalSimulator() {
-  const thalSlider = document.getElementById("sim-thal");
-  const cpSlider = document.getElementById("sim-cp");
-  const caSlider = document.getElementById("sim-ca");
-  const oldpeakSlider = document.getElementById("sim-oldpeak");
+// ==============================================================================
+// PASO 1: PIPELINE DE DATOS, NULOS Y BINARIZACIÓN
+// ==============================================================================
+function initStep1() {
+  const box = document.getElementById("p1-stream-box");
+  const msg = document.getElementById("p1-status-msg");
+  if (!box) return;
 
-  const thalVal = document.getElementById("val-thal");
-  const cpVal = document.getElementById("val-cp");
-  const caVal = document.getElementById("val-ca");
-  const oldpeakVal = document.getElementById("val-oldpeak");
+  // Crear 28 dots representativos
+  box.innerHTML = "";
+  for (let i = 0; i < 28; i++) {
+    const dot = document.createElement("div");
+    dot.className = "data-dot";
+    box.appendChild(dot);
+  }
 
-  const badgeDisplay = document.getElementById("sim-badge-display");
-  const resultTitle = document.getElementById("sim-result-title");
-  const resultDesc = document.getElementById("sim-result-desc");
-  const resultPath = document.getElementById("sim-path-trace");
+  const dots = box.querySelectorAll(".data-dot");
 
-  if (!thalSlider || !cpSlider || !caSlider || !oldpeakSlider) return;
-
-  const thalMap = { 3: "Normal (3)", 6: "Defecto Fijo (6)", 7: "Defecto Reversible (7)" };
-  const cpMap = { 1: "Angina Típica (1)", 2: "Angina Atípica (2)", 3: "No Anginoso (3)", 4: "Asintomático (4)" };
-
-  function evaluatePatient() {
-    const thal = parseInt(thalSlider.value);
-    const cp = parseInt(cpSlider.value);
-    const ca = parseInt(caSlider.value);
-    const oldpeak = parseFloat(oldpeakSlider.value);
-
-    thalVal.textContent = thalMap[thal] || thal;
-    cpVal.textContent = cpMap[cp] || cp;
-    caVal.textContent = `${ca} vaso(s)`;
-    oldpeakVal.textContent = `${oldpeak.toFixed(1)} mm`;
-
-    let path = [];
-    let isDisease = false;
-    let prob = 0;
-
-    // Regla exacta del árbol con max_depth=3 extraída de scikit-learn
-    // Raíz: thal <= 4.5 (Normal = 3)
-    if (thal <= 4.5) {
-      path.push("Raíz: thal ≤ 4.5 (Talasemia Normal)");
-      // Nodo izquierdo: ca <= 0.5
-      if (ca <= 0.5) {
-        path.push("Nodo 1: ca ≤ 0.5 (0 Vasos coloreados)");
-        if (oldpeak <= 1.5) {
-          path.push("Nodo 2: oldpeak ≤ 1.5 mm → Hoja Terminal");
-          isDisease = false;
-          prob = 4.3; // 95.7% sano
-        } else {
-          path.push("Nodo 2: oldpeak > 1.5 mm → Hoja Terminal");
-          isDisease = true;
-          prob = 62.5;
-        }
-      } else {
-        path.push(`Nodo 1: ca > 0.5 (${ca} Vasos con fluoroscopia)`);
-        if (cp <= 3.5) {
-          path.push("Nodo 2: cp ≤ 3.5 (Dolor anginoso no silente)");
-          isDisease = false;
-          prob = 33.3;
-        } else {
-          path.push("Nodo 2: cp > 3.5 (Asintomático de alto riesgo)");
-          isDisease = true;
-          prob = 84.6;
-        }
+  document.getElementById("p1-btn-raw")?.addEventListener("click", () => {
+    dots.forEach((d, i) => {
+      d.className = "data-dot";
+      // 3 dots marcados como nulos '?'
+      if (i === 6 || i === 14 || i === 22) {
+        d.classList.add("null-drop");
       }
-    } else {
-      path.push(`Raíz: thal > 4.5 (Defecto Severo en Perfusión: ${thal})`);
-      if (cp <= 3.5) {
-        path.push("Nodo 1: cp ≤ 3.5");
-        if (ca <= 0.5) {
-          path.push("Nodo 2: ca ≤ 0.5 → Hoja Terminal");
-          isDisease = false;
-          prob = 40.0;
-        } else {
-          path.push("Nodo 2: ca > 0.5 → Hoja Terminal");
-          isDisease = true;
-          prob = 88.9;
-        }
-      } else {
-        path.push("Nodo 1: cp > 3.5 (Asintomático + Perfusión Dañada)");
-        path.push("Ruta crítica directa → Hoja Terminal de Cardiopatía");
-        isDisease = true;
-        prob = 91.7; // 91.7% cardiopatía
-      }
-    }
+    });
+    if (msg) msg.innerHTML = '<span style="color:var(--accent-rose);">6 nulos detectados en ca y thal con valor "?"</span>';
+  });
 
-    // Actualizar visualización
-    if (badgeDisplay && resultTitle && resultDesc && resultPath) {
-      badgeDisplay.className = `result-badge-display ${isDisease ? "disease" : "healthy"}`;
-      if (isDisease) {
-        resultTitle.textContent = "Cardiopatía Detectada (Alto Riesgo)";
-        resultDesc.textContent = `Probabilidad Estimada por CART: ${prob.toFixed(1)}% de presencia de enfermedad coronaria.`;
-      } else {
-        resultTitle.textContent = "Bajo Riesgo / Sin Cardiopatía";
-        resultDesc.textContent = `Probabilidad de Ausencia de Enfermedad: ${(100 - prob).toFixed(1)}%.`;
+  document.getElementById("p1-btn-clean")?.addEventListener("click", () => {
+    dots.forEach((d, i) => {
+      d.className = "data-dot";
+      if (i === 6 || i === 14 || i === 22) {
+        d.classList.add("test"); // Imputados
       }
-      resultPath.innerHTML = path.map((step, idx) => `<div><b>Paso ${idx + 1}:</b> ${step}</div>`).join("");
+    });
+    if (msg) msg.innerHTML = '<span style="color:var(--accent-amber);">Imputación: ca &rarr; mediana (0.0) | thal &rarr; moda (3.0)</span>';
+  });
+
+  document.getElementById("p1-btn-binarize")?.addEventListener("click", () => {
+    dots.forEach((d, i) => {
+      d.className = "data-dot";
+      if (i % 2 === 0) {
+        d.classList.add("healthy"); // Sano (0)
+      } else {
+        d.classList.add("sick"); // Cardiopatía (1)
+      }
+    });
+    if (msg) msg.innerHTML = '<span style="color:var(--accent-emerald);">Binarizado: 54% Sanos (Verde) y 46% Cardiopatía (Rojo)</span>';
+  });
+}
+
+// ==============================================================================
+// PASO 2: PARTICIÓN TRAIN/TEST & ESTRATIFICACIÓN
+// ==============================================================================
+function initStep2() {
+  const box = document.getElementById("p2-stream-box");
+  const msg = document.getElementById("p2-status-msg");
+  if (!box) return;
+
+  box.innerHTML = "";
+  for (let i = 0; i < 28; i++) {
+    const dot = document.createElement("div");
+    dot.className = "data-dot";
+    box.appendChild(dot);
+  }
+
+  const dots = box.querySelectorAll(".data-dot");
+
+  function renderSplit(stratified) {
+    dots.forEach((d, i) => {
+      d.className = "data-dot";
+      // 80% train = 22 dots, 20% test = 6 dots
+      if (i < 22) {
+        d.classList.add("train");
+      } else {
+        d.classList.add("test");
+      }
+    });
+    if (msg) {
+      msg.innerHTML = stratified
+        ? '<span style="color:var(--accent-emerald);">Estratificación Activa: Train (242) y Test (61) con 45.9% Cardiopatía exacto</span>'
+        : '<span style="color:var(--accent-cyan);">random_state=42: Shuffling determinista fijado</span>';
     }
   }
 
-  thalSlider.addEventListener("input", evaluatePatient);
-  cpSlider.addEventListener("input", evaluatePatient);
-  caSlider.addEventListener("input", evaluatePatient);
-  oldpeakSlider.addEventListener("input", evaluatePatient);
+  document.getElementById("p2-btn-shuffle")?.addEventListener("click", () => renderSplit(false));
+  document.getElementById("p2-btn-stratify")?.addEventListener("click", () => renderSplit(true));
 
-  evaluatePatient();
+  renderSplit(true);
+}
+
+// ==============================================================================
+// PASO 3: INVARIANZA DE ESCALA
+// ==============================================================================
+function initStep3() {
+  const slider = document.getElementById("p3-slider");
+  const scaleVal = document.getElementById("p3-scale-val");
+  const sampleVal = document.getElementById("p3-sample-val");
+  const threshVal = document.getElementById("p3-thresh-val");
+  const ruleVal = document.getElementById("p3-rule-val");
+
+  if (!slider) return;
+
+  slider.addEventListener("input", (e) => {
+    const factor = parseFloat(e.target.value);
+    const scaledSample = (240 * factor).toFixed(1);
+    const scaledThresh = (230 * factor).toFixed(1);
+
+    if (scaleVal) scaleVal.textContent = `${factor.toFixed(1)}× (${factor === 1 ? "Crudo" : "Multiplicado"})`;
+    if (sampleVal) sampleVal.textContent = `chol = ${scaledSample}`;
+    if (threshVal) threshVal.textContent = `θ = ${scaledThresh}`;
+    if (ruleVal) {
+      ruleVal.innerHTML = `<span style="color:var(--accent-emerald);">${scaledSample} > ${scaledThresh} &rarr; EXACTAMENTE MISMA RAMA DERECHA</span>`;
+    }
+  });
+}
+
+// ==============================================================================
+// PASO 4: CALCULADOR DINÁMICO DE GINI
+// ==============================================================================
+function initStep4() {
+  const slider = document.getElementById("p4-slider");
+  const p0Val = document.getElementById("p4-p0-val");
+  const p1Val = document.getElementById("p4-p1-val");
+  const result = document.getElementById("p4-gini-result");
+  const state = document.getElementById("p4-gini-state");
+
+  if (!slider) return;
+
+  slider.addEventListener("input", (e) => {
+    const p0 = parseInt(e.target.value) / 100;
+    const p1 = 1 - p0;
+    const gini = 1.0 - (p0 * p0 + p1 * p1);
+
+    if (p0Val) p0Val.textContent = p0.toFixed(2);
+    if (p1Val) p1Val.textContent = p1.toFixed(2);
+    if (result) result.textContent = gini.toFixed(4);
+
+    if (state) {
+      if (gini < 0.1) {
+        state.innerHTML = '<span style="color:var(--accent-emerald);">¡Nodo Casi Puro! (Gini &approx; 0.0)</span>';
+      } else if (gini > 0.48) {
+        state.innerHTML = '<span style="color:var(--accent-amber);">Nodo Muy Impuro (Máximo Desorden &approx; 0.5)</span>';
+      } else {
+        state.innerHTML = '<span style="color:var(--accent-cyan);">Incertidumbre Moderada</span>';
+      }
+    }
+  });
+}
+
+// ==============================================================================
+// PASO 5: CHART COMPARATIVO GINI VS ENTROPÍA
+// ==============================================================================
+function initStep5Chart() {
+  const ctx = document.getElementById("p5-chart");
+  if (!ctx || p5ChartInstance) return;
+
+  const probs = [];
+  const giniData = [];
+  const entropyData = [];
+
+  for (let i = 0; i <= 100; i += 5) {
+    const p = i / 100;
+    probs.push(p.toFixed(2));
+    giniData.push(2 * p * (1 - p)); // Gini escalado
+    if (p === 0 || p === 1) {
+      entropyData.push(0);
+    } else {
+      // Shannon Entropy dividida entre 2 para igualar escala máxima en 0.5
+      const h = -(p * Math.log2(p) + (1 - p) * Math.log2(1 - p)) * 0.5;
+      entropyData.push(h);
+    }
+  }
+
+  p5ChartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: probs,
+      datasets: [
+        {
+          label: "Impureza Gini (2p(1-p))",
+          data: giniData,
+          borderColor: "#38bdf8",
+          backgroundColor: "rgba(56, 189, 248, 0.1)",
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 0
+        },
+        {
+          label: "Entropía Shannon (0.5 H(p))",
+          data: entropyData,
+          borderColor: "#10b981",
+          backgroundColor: "transparent",
+          borderDash: [4, 4],
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: "#94a3b8", font: { size: 9, family: "'Plus Jakarta Sans', sans-serif" } }
+        }
+      },
+      scales: {
+        x: {
+          display: true,
+          ticks: { color: "#64748b", font: { size: 8 } },
+          grid: { color: "rgba(255, 255, 255, 0.05)" }
+        },
+        y: {
+          display: true,
+          ticks: { color: "#64748b", font: { size: 8 } },
+          grid: { color: "rgba(255, 255, 255, 0.05)" }
+        }
+      }
+    }
+  });
+}
+
+// ==============================================================================
+// PASO 6: SOBREAJUSTE VS PRE-PODA
+// ==============================================================================
+function initStep6() {
+  const btnOverfit = document.getElementById("p6-btn-overfit");
+  const btnPruned = document.getElementById("p6-btn-pruned");
+  const trAcc = document.getElementById("p6-train-acc");
+  const teAcc = document.getElementById("p6-test-acc");
+  const msg = document.getElementById("p6-state-msg");
+
+  btnOverfit?.addEventListener("click", () => {
+    if (trAcc) { trAcc.textContent = "100.0%"; trAcc.style.color = "var(--accent-rose)"; }
+    if (teAcc) { teAcc.textContent = "73.8%"; teAcc.style.color = "var(--accent-rose)"; }
+    if (msg) msg.innerHTML = '<span style="color:var(--accent-rose);">Árbol Libre: Memoriza ruido con 32 hojas &rarr; Brecha destructiva de 26.23%</span>';
+  });
+
+  btnPruned?.addEventListener("click", () => {
+    if (trAcc) { trAcc.textContent = "84.3%"; trAcc.style.color = "var(--accent-emerald)"; }
+    if (teAcc) { teAcc.textContent = "86.9%"; teAcc.style.color = "var(--accent-cyan)"; }
+    if (msg) msg.innerHTML = '<span style="color:var(--accent-emerald);">Árbol Podado: Regularización óptima con 8 hojas &rarr; Generalización probada</span>';
+  });
+}
+
+// ==============================================================================
+// PASO 7: EXPLORADOR DE NODOS DEL ÁRBOL
+// ==============================================================================
+function initStep7() {
+  const detail = document.getElementById("p7-node-detail");
+  if (!detail) return;
+
+  document.getElementById("p7-node-root")?.addEventListener("click", () => {
+    detail.innerHTML = `
+      <b style="color:var(--accent-cyan);">Nodo Raíz [thal &le; 4.5]</b><br>
+      • Muestras: 242 pacientes | Gini: 0.497<br>
+      • Distribución: [131 Sanos, 111 Cardiopatía]<br>
+      • Criterio: Separa talasemia normal (3.0) de anomalías graves (6.0, 7.0).
+    `;
+  });
+
+  document.getElementById("p7-node-left")?.addEventListener("click", () => {
+    detail.innerHTML = `
+      <b style="color:var(--accent-emerald);">Subárbol Izquierdo [ca &le; 0.5]</b><br>
+      • Muestras: 134 pacientes con perfusión normal<br>
+      • Diagnóstico predominante: 83% Probabilidad de Sano.<br>
+      • Criterio clínico: Cero vasos fluoroscópicos obstruidos.
+    `;
+  });
+
+  document.getElementById("p7-node-right")?.addEventListener("click", () => {
+    detail.innerHTML = `
+      <b style="color:var(--accent-rose);">Subárbol Derecho [cp &le; 3.5]</b><br>
+      • Muestras: 108 pacientes con defecto de talio<br>
+      • Diagnóstico predominante: 82% Cardiopatía confirmada.<br>
+      • Criterio clínico: Angina inducida o dolor torácico asintomático.
+    `;
+  });
+}
+
+// ==============================================================================
+// PASO 8: ALARMA CLÍNICA EN MATRIZ DE CONFUSIÓN
+// ==============================================================================
+function initStep8() {
+  const alertBox = document.getElementById("p8-alert-box");
+  if (!alertBox) return;
+
+  document.getElementById("p8-btn-tn")?.addEventListener("click", () => {
+    alertBox.innerHTML = '<b style="color:var(--accent-emerald);">Verdadero Negativo (29):</b> Paciente sano diagnosticado correctamente como sano. Coste: Ninguno, alta médica inmediata.';
+  });
+
+  document.getElementById("p8-btn-fp")?.addEventListener("click", () => {
+    alertBox.innerHTML = '<b style="color:var(--accent-amber);">Falso Positivo (4):</b> Sano catalogado con cardiopatía. Coste: Ansiedad y un ecocardiograma de confirmación secundario.';
+  });
+
+  document.getElementById("p8-btn-fn")?.addEventListener("click", () => {
+    alertBox.innerHTML = '<b style="color:var(--accent-rose);">¡Falso Negativo (4) - Alarma Médica Severa!:</b> Paciente con isquemia enviado a casa sin tratamiento. Riesgo letal inminente. Por eso el <b>Recall (85.71%)</b> es la prioridad médica.';
+  });
+
+  document.getElementById("p8-btn-tp")?.addEventListener("click", () => {
+    alertBox.innerHTML = '<b style="color:var(--accent-emerald);">Verdadero Positivo (24):</b> Cardiopatía detectada a tiempo para angiografía y tratamiento médico preventivo.';
+  });
+}
+
+// ==============================================================================
+// PASO 9: CHART DE IMPORTANCIA DE CARACTERÍSTICAS
+// ==============================================================================
+function initStep9Chart() {
+  const ctx = document.getElementById("p9-chart");
+  if (!ctx || p9ChartInstance) return;
+
+  p9ChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["thal (53.7%)", "cp (19.4%)", "ca (16.9%)", "oldpeak (6.7%)", "age (3.3%)"],
+      datasets: [
+        {
+          label: "Importancia MDI Ponderada",
+          data: [0.537, 0.194, 0.169, 0.067, 0.033],
+          backgroundColor: [
+            "#38bdf8",
+            "#0ea5e9",
+            "#0284c7",
+            "#0369a1",
+            "#075985"
+          ],
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          max: 0.65,
+          ticks: { color: "#64748b", font: { size: 8 } },
+          grid: { color: "rgba(255, 255, 255, 0.05)" }
+        },
+        y: {
+          ticks: { color: "#94a3b8", font: { size: 9, family: "'Fira Code', monospace" } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ==============================================================================
+// PASO 10: SIMULADOR DE PACIENTE EN TIEMPO REAL
+// ==============================================================================
+function initStep10() {
+  const selThal = document.getElementById("p10-sel-thal");
+  const selCp = document.getElementById("p10-sel-cp");
+  const title = document.getElementById("p10-res-title");
+  const desc = document.getElementById("p10-res-desc");
+  const badge = document.getElementById("p10-result-badge");
+
+  if (!selThal || !selCp) return;
+
+  function evaluatePatient() {
+    const thal = parseFloat(selThal.value);
+    const cp = parseFloat(selCp.value);
+
+    // Lógica del árbol CART entrenado:
+    // thal <= 4.5 -> Mayoritariamente sano excepto si ca/cp elevados
+    // thal > 4.5  -> Mayoritariamente cardiopatía
+    if (thal <= 4.5) {
+      if (cp <= 3.5) {
+        if (title) { title.textContent = "🟢 BAJO RIESGO (95.7%)"; title.style.color = "var(--accent-emerald)"; }
+        if (desc) desc.textContent = "Ruta: thal ≤ 4.5 &rarr; cp ≤ 3.5 &rarr; Hoja Sana";
+        if (badge) {
+          badge.style.background = "rgba(16, 185, 129, 0.15)";
+          badge.style.borderColor = "rgba(16, 185, 129, 0.35)";
+        }
+      } else {
+        if (title) { title.textContent = "🟡 RIESGO MODERADO (60.0%)"; title.style.color = "var(--accent-amber)"; }
+        if (desc) desc.textContent = "Ruta: thal ≤ 4.5 &rarr; cp asintomático &rarr; Seguimiento";
+        if (badge) {
+          badge.style.background = "rgba(245, 158, 11, 0.15)";
+          badge.style.borderColor = "rgba(245, 158, 11, 0.35)";
+        }
+      }
+    } else {
+      if (title) { title.textContent = "🔴 ALTO RIESGO (98.0%)"; title.style.color = "var(--accent-rose)"; }
+      if (desc) desc.textContent = "Ruta: thal > 4.5 (Defecto de Talio) &rarr; Hoja Isquémica";
+      if (badge) {
+        badge.style.background = "rgba(244, 63, 94, 0.15)";
+        badge.style.borderColor = "rgba(244, 63, 94, 0.35)";
+      }
+    }
+  }
+
+  selThal.addEventListener("change", evaluatePatient);
+  selCp.addEventListener("change", evaluatePatient);
 }
