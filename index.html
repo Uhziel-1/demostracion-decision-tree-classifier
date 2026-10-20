@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DecisionTreeClassifier · Demostración Teórico-Práctica Atómica (IA 2026-2)</title>
+  <title>DecisionTreeClassifier · Demostración Práctica 1:1 en JupyterLab (IA 2026-2)</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & Fira Code -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,9 +17,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-
-  <!-- Chart.js for Interactive Charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Hoja de Estilos de la Presentación -->
   <link rel="stylesheet" href="css/style.css">
@@ -41,9 +38,9 @@
       </div>
 
       <div class="header-right">
-        <a href="https://uhziel-1.github.io/demostracion-arbol-de-decisiones-v1/" target="_blank" class="meta-pill" style="color: var(--accent-cyan); text-decoration: none; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.2rem 0.6rem; border-radius: 6px; background: rgba(56, 189, 248, 0.08);" title="Abrir Demostración Externa v1">
-          <i data-lucide="external-link" style="width: 13px; height: 13px;"></i>
-          <span>Demo v1 (Web)</span>
+        <a href="http://localhost:8888/lab/tree/01_Demostracion_DecisionTreeClassifier.ipynb" target="_blank" class="meta-pill" style="color: var(--accent-cyan); text-decoration: none; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.2rem 0.6rem; border-radius: 6px; background: rgba(56, 189, 248, 0.08);" title="Abrir Cuaderno en Vivo en JupyterLab">
+          <i data-lucide="terminal" style="width: 13px; height: 13px;"></i>
+          <span>JupyterLab Local (:8888)</span>
         </a>
         <div class="meta-pill">
           <i data-lucide="heart-pulse" style="width: 15px; height: 15px; color: var(--accent-rose);"></i>
@@ -83,7 +80,7 @@
           </h1>
 
           <p class="title-desc">
-            Demostración empírica atómica sincronizada 1:1 con Jupyter Notebook. Cada paso presenta código real, salida ejecutada, justificación de ingeniería y animación interactiva del flujo de datos en el <em>Cleveland Heart Disease Dataset</em>.
+            Demostración empírica respaldada con capturas directas de ejecución en <b>JupyterLab</b>. A la izquierda se presenta la prueba visual inalterable del código y sus resultados; a la derecha, la interpretación clínica, matemática y conceptual paso a paso.
           </p>
 
           <div class="metadata-grid">
@@ -100,8 +97,8 @@
               <div class="meta-box-value">Uhziel Elí Condori Rojas</div>
             </div>
             <div class="meta-box">
-              <div class="meta-box-label">Enfoque Pedagógico</div>
-              <div class="meta-box-value" style="color: var(--accent-emerald);">Código Atómico + Animación En Vivo</div>
+              <div class="meta-box-label">Formato de Exposición</div>
+              <div class="meta-box-value" style="color: var(--accent-emerald);">Captura Real 50% + Explicación 50%</div>
             </div>
           </div>
         </div>
@@ -114,87 +111,52 @@
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="database" style="width: 13px; height: 13px;"></i> Paso 1 &middot; Preparación de Datos</span>
           <h2 class="slide-title">Ingesta Quirúrgica, Imputación Clínica y Binarización</h2>
-          <p class="slide-subtitle">Carga del dataset con detección de caracteres nulos, resolución determinista de ausentes y formulación binaria de la patología.</p>
+          <p class="slide-subtitle">Captura real de la carga del dataset Cleveland con resolución de caracteres nulos '?' y binarización diagnóstica.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [1]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo: Captura con Zoom/Paneo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 1</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out" title="Alejar (-)"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in" title="Acercar (+)"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset" title="Restablecer"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd
-<span class="code-comment"># Carga con recorte de espacios y captura de nulos '?'</span>
-df = pd.<span class="code-fn">read_csv</span>(<span class="code-str">"heart-disease-cleveland.csv"</span>, skipinitialspace=<span class="code-keyword">True</span>, na_values=<span class="code-str">'?'</span>)
-
-<span class="code-comment"># Binarización diagnóstica (0: Sano, >0: Cardiopatía)</span>
-df[<span class="code-str">'target'</span>] = (df[<span class="code-str">'diagnosis'</span>] > <span class="code-num">0</span>).<span class="code-fn">astype</span>(<span class="code-keyword">int</span>)
-df.<span class="code-fn">drop</span>(columns=[<span class="code-str">'diagnosis'</span>], inplace=<span class="code-keyword">True</span>)
-
-<span class="code-comment"># Imputación clínica determinista</span>
-df[<span class="code-str">'ca'</span>] = df[<span class="code-str">'ca'</span>].<span class="code-fn">fillna</span>(df[<span class="code-str">'ca'</span>].<span class="code-fn">median</span>())
-df[<span class="code-str">'thal'</span>] = df[<span class="code-str">'thal'</span>].<span class="code-fn">fillna</span>(df[<span class="code-str">'thal'</span>].<span class="code-fn">mode</span>()[<span class="code-num">0</span>])</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Fundamento</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Manejo de nulos ('?'):</b> Las columnas fluoroscopia (<code style="color: var(--accent-cyan);">ca</code>, 4 ausencias) y talasemia (<code style="color: var(--accent-cyan);">thal</code>, 2 ausencias) no se descartan para no sesgar la muestra pequeña (303). Se imputan con mediana y moda respectivamente.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_1.png" alt="Celda 1: Ingesta y Limpieza" class="panzoom-image">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Binarización $Y \in \{0, 1\}$:</b> La variable <code style="color: var(--accent-cyan);">diagnosis</code> original contiene estadios 0 a 4. Clínicamente, cualquier grado $>0$ denota obstrucción coronaria requiriendo intervención.</div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Transformación Booleana</div>
-                $$y_i = \mathbb{I}(\text{diagnosis}_i > 0) \implies y_i \in \{0: \text{Sano}, 1: \text{Cardiopatía}\}$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [1]</span>
+          <!-- Panel Derecho: Explicación Fácil de Entender -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>El código lee el archivo <code>heart-disease-cleveland.csv</code> y detecta que faltaban datos codificados como signos de interrogación <code>'?'</code>.</li>
+                <li>La tabla de salida (<code>df.head(3)</code>) muestra las primeras filas ya limpias con <b>303 pacientes y 14 columnas</b>.</li>
+                <li>La columna final <code>target</code> ahora solo tiene valores <b>0 (Sano)</b> o <b>1 (Cardiopatía)</b>.</li>
+              </ul>
             </div>
-            <div class="output-container">
-Dimensiones limpias: <span class="output-highlight">303 pacientes × 14 variables</span> (13 predictoras + target)
-• Nulos detectados y resueltos: <span class="output-success">0 valores NaN residuales</span>
-• Balance diagnóstico inicial:
-  - Sanos (0):       <span class="output-success">164 pacientes (54.1%)</span>
-  - Cardiópatas (1): <span class="output-danger">139 pacientes (45.9%)</span>
-• Variables clave listas para partición y entrenamiento CART.
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="sparkles" style="color: var(--accent-amber);"></i> Animación del Pipeline de Datos</span>
-              <span class="quad-badge">Interactiva</span>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Por qué no borramos a los pacientes con nulos?</b> Solo 6 valores faltaban (4 en <code>ca</code> y 2 en <code>thal</code>). En una muestra pequeña de 303 pacientes, eliminar filas reduciría la calidad del entrenamiento. Por eso los imputamos con la <b>mediana</b> y la <b>moda</b>.<br>
+                <b>• ¿Por qué binarizar el target?</b> El dataset original tenía 5 niveles de gravedad (0 a 4). Al cardiólogo le interesa en primer lugar una decisión binaria: <i>¿El paciente requiere tratamiento coronario inmediato o está sano?</i> Por eso todo valor $>0$ se vuelve 1.
+              </div>
             </div>
-            <div class="quad-body anim-container">
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.2rem;">
-                Estado del lote clínico (303 muestras simuladas):
-              </div>
-              <div class="data-stream-box" id="p1-stream-box">
-                <!-- Inyectado por JS: 30 dots -->
-              </div>
-              <div class="anim-toolbar" style="margin-top: 0.5rem;">
-                <button class="anim-btn btn-rose" id="p1-btn-raw"><i data-lucide="alert-circle" style="width: 13px;"></i> 1. Ver Nulos '?'</button>
-                <button class="anim-btn btn-amber" id="p1-btn-clean"><i data-lucide="wand-2" style="width: 13px;"></i> 2. Imputar ca & thal</button>
-                <button class="anim-btn btn-emerald" id="p1-btn-binarize"><i data-lucide="check-check" style="width: 13px;"></i> 3. Binarizar Target</button>
-              </div>
-              <div id="p1-status-msg" style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--accent-cyan); margin-top: 0.3rem;">
-                Presiona un botón para ver la transformación en vivo
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan por qué imputaste con mediana en <code>ca</code>: <i>«La variable fluoroscopia <code>ca</code> es discreta y asimétrica; la mediana (0.0) representa el valor clínico central robusto que no introduce distorsión artificial en el árbol»</i>.
               </div>
             </div>
           </div>
@@ -206,85 +168,53 @@ Dimensiones limpias: <span class="output-highlight">303 pacientes × 14 variable
            ======================================================================== -->
       <section class="slide" id="slide-3">
         <div class="slide-header">
-          <span class="slide-tag"><i data-lucide="split" style="width: 13px; height: 13px;"></i> Paso 2 &middot; Protocolo de Validación</span>
+          <span class="slide-tag"><i data-lucide="split" style="width: 13px; height: 13px;"></i> Paso 2 &middot; Protocolo Experimental</span>
           <h2 class="slide-title">Partición Train/Test con Semilla Fija y Estratificación (80:20)</h2>
-          <p class="slide-subtitle">Garantía de reproducibilidad determinista y preservación matemática exacta de la prevalencia epidemiológica.</p>
+          <p class="slide-subtitle">Captura real de la partición de 242 muestras de entrenamiento y 61 de prueba preservando la prevalencia de la enfermedad.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [2]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 2</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split
-
-X = df.<span class="code-fn">drop</span>(columns=[<span class="code-str">'target'</span>])
-y = df[<span class="code-str">'target'</span>]
-
-<span class="code-comment"># Partición 80:20 estratificada con semilla 42</span>
-X_train, X_test, y_train, y_test = <span class="code-fn">train_test_split</span>(
-    X, y, test_size=<span class="code-num">0.2</span>, random_state=<span class="code-num">42</span>, stratify=y
-)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Fundamento</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>¿Por qué random_state=42?:</b> Fija el generador pseudoaleatorio Mersenne Twister, garantizando que el árbol evalúe exactamente las mismas muestras en cada ejecución de defensa.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_2.png" alt="Celda 2: Partición 80:20" class="panzoom-image">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>¿Por qué stratify=y?:</b> Sin estratificación, una partición aleatoria podría dejar el conjunto de test con pocos cardiópatas. Con estratificación, ambos subconjuntos mantienen exactamente $45.9\%$ de enfermos.</div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Condición de Estratificación</div>
-                $$\frac{|y_{\text{train}}=1|}{|y_{\text{train}}|} \approx \frac{|y_{\text{test}}=1|}{|y_{\text{test}}|} \approx 45.88\%$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [2]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>Dividimos los 303 pacientes en: <b>242 para entrenar (80%)</b> y <b>61 para evaluar (20%)</b>.</li>
+                <li>Fíjate en las proporciones de salida: Train tiene <b>45.87%</b> de cardiópatas y Test tiene <b>45.90%</b>. La diferencia es prácticamente cero.</li>
+              </ul>
             </div>
-            <div class="output-container">
-Conjunto de Entrenamiento (80%): <span class="output-highlight">242 muestras</span> (131 Sanos, 111 Cardiopatía)
-Conjunto de Prueba        (20%): <span class="output-highlight">61 muestras</span> (33 Sanos, 28 Cardiopatía)
-Proporción de Cardiopatía en Train: <span class="output-success">45.87%</span>
-Proporción de Cardiopatía en Test:  <span class="output-success">45.90%</span>
-Discrepancia entre particiones: <span class="output-highlight">0.03%</span> (Estratificación perfecta)
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="shuffle" style="color: var(--accent-amber);"></i> Animador de Partición & Shuffling</span>
-              <span class="quad-badge">Interactiva</span>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Qué hace <code>random_state=42</code>?</b> La partición es aleatoria. Si no fijamos una semilla, cada vez que corras el código los números cambian. El <code>42</code> asegura que el experimento sea <b>100% determinista y reproducible</b> cuando el profesor lo revise.<br>
+                <b>• ¿Qué hace <code>stratify=y</code>?</b> Si se divide al azar sin control, la suerte podría dejar a casi todos los enfermos en Train y puros sanos en Test (o viceversa). <code>stratify=y</code> fuerza a que ambos conjuntos tengan la misma proporción médica original.
+              </div>
             </div>
-            <div class="quad-body anim-container">
-              <div style="font-size: 0.78rem; color: var(--text-muted);">
-                Data completa (303) dividida en 80% Train (<span style="color: var(--accent-cyan); font-weight:700;">Azul</span>) y 20% Test (<span style="color: var(--accent-amber); font-weight:700;">Ámbar</span>):
-              </div>
-              <div class="data-stream-box" id="p2-stream-box">
-                <!-- Dots train/test -->
-              </div>
-              <div class="anim-toolbar">
-                <button class="anim-btn btn-cyan" id="p2-btn-shuffle"><i data-lucide="refresh-cw" style="width: 13px;"></i> Aplicar random_state=42</button>
-                <button class="anim-btn btn-emerald" id="p2-btn-stratify"><i data-lucide="layers" style="width: 13px;"></i> Activar stratify=y</button>
-              </div>
-              <div id="p2-status-msg" style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--accent-cyan); margin-top: 0.3rem;">
-                Semilla 42 lista &middot; Balance preservado
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan qué pasaría sin estratificación: <i>«Correríamos el riesgo de sesgo de partición (data drift), donde el conjunto de test no reflejaría la prevalencia epidemiológica real de la población clínica»</i>.
               </div>
             </div>
           </div>
@@ -292,91 +222,58 @@ Discrepancia entre particiones: <span class="output-highlight">0.03%</span> (Est
       </section>
 
       <!-- ========================================================================
-           SLIDE 04: PASO 3 - DEMOSTRACIÓN DE INVARIANZA A ESCALA
+           SLIDE 04: PASO 3 - INVARIANZA A ESCALA
            ======================================================================== -->
       <section class="slide" id="slide-4">
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="check-check" style="width: 13px; height: 13px;"></i> Paso 3 &middot; Propiedad Teórica Fundamental</span>
           <h2 class="slide-title">Demostración Empírica: 100% Invarianza ante Escalamiento</h2>
-          <p class="slide-subtitle">A diferencia de KNN o Redes Neuronales, los árboles CART solo evalúan condiciones de orden monotónico sin distorsión por magnitud.</p>
+          <p class="slide-subtitle">Captura real que prueba que los datos crudos y estandarizados obtienen exactamente la misma exactitud (86.89%).</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [3]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 3</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler
-<span class="code-keyword">from</span> sklearn.tree <span class="code-keyword">import</span> DecisionTreeClassifier
-
-<span class="code-comment"># Ajuste de árboles idénticos: Crudo vs StandardScaler</span>
-scaler = <span class="code-fn">StandardScaler</span>()
-X_tr_sc = scaler.<span class="code-fn">fit_transform</span>(X_train)
-X_te_sc = scaler.<span class="code-fn">transform</span>(X_test)
-
-clf_raw = <span class="code-fn">DecisionTreeClassifier</span>(max_depth=<span class="code-num">3</span>, min_samples_leaf=<span class="code-num">5</span>, random_state=<span class="code-num">42</span>).<span class="code-fn">fit</span>(X_train, y_train)
-clf_scaled = <span class="code-fn">DecisionTreeClassifier</span>(max_depth=<span class="code-num">3</span>, min_samples_leaf=<span class="code-num">5</span>, random_state=<span class="code-num">42</span>).<span class="code-fn">fit</span>(X_tr_sc, y_train)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Teorema de Orden</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Cortes Ortogonales Monotónicos:</b> CART no calcula distancias euclidianas. Evalúa si $x_j \le \theta$. Para cualquier función estrictamente creciente $f$:
-                </div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_3.png" alt="Celda 3: Invarianza de Escala" class="panzoom-image">
               </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Preservación Topológica</div>
-                $$x_j \le \theta \iff f(x_j) \le f(\theta) \iff \frac{x_j - \mu}{\sigma} \le \frac{\theta - \mu}{\sigma}$$
-              </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Implicación en Producción:</b> Ahorra pipelines pesados de normalización en inferencia; el colesterol en $300\text{ mg/dL}$ y la fluoroscopia en $[0, 3]$ conviven sin distorsión.</div>
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [3]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>Entrenamos dos modelos con los mismos hiperparámetros: uno con datos crudos y otro normalizado con <code>StandardScaler</code>.</li>
+                <li>Ambos obtuvieron exactamente: <b>0.8689 (86.89%)</b> de exactitud en los 61 pacientes de test.</li>
+                <li>La diferencia entre ambos modelos fue de <b>0.0000</b> (cero discrepancias caso por caso).</li>
+              </ul>
             </div>
-            <div class="output-container">
-Exactitud con Datos Crudos (Sin Escalar):       <span class="output-highlight">0.8689 (86.89%)</span>
-Exactitud con StandardScaler (Estandarizados):  <span class="output-highlight">0.8689 (86.89%)</span>
-Diferencia Matemática:                         <span class="output-success">0.00000000%</span>
-Discrepancias en predicciones sobre 61 tests:  <span class="output-success">0 pacientes</span>
-Conclusión: ¡Comprobación empírica formal de invariancia absoluta!
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="sliders" style="color: var(--accent-amber);"></i> Simulador de Invarianza de Escala</span>
-              <span class="quad-badge">Interactiva</span>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Por qué a CART no le importa la escala?</b> Modelos como KNN o Redes Neuronales calculan distancias euclidianas ($\sqrt{\sum (x_i - y_i)^2}$). En ellos, si el colesterol vale 300 y los vasos fluoroscópicos valen 2, el colesterol aplasta a las demás variables.<br>
+                <b>• El Teorema de Orden:</b> Los árboles de decisión <b>NO calculan distancias</b>. Solo preguntan: <i>¿$x_j \le \text{umbral}$?</i> Si multiplicas el colesterol o lo normalizas, el orden relativo de los pacientes sigue siendo idéntico. El árbol simplemente traslada el umbral numérico sin cambiar ninguna decisión.
+              </div>
             </div>
-            <div class="quad-body anim-container">
-              <div style="font-size: 0.78rem; color: var(--text-muted); width: 100%; display: flex; justify-content: space-between;">
-                <span>Factor de Escala: <b id="p3-scale-val" style="color: var(--accent-cyan);">1.0× (Crudo)</b></span>
-                <span style="color: var(--accent-emerald); font-weight:700;">Exactitud: 86.89%</span>
-              </div>
-              <input type="range" class="anim-slider" id="p3-slider" min="1" max="100" value="1">
-              <div style="width: 100%; background: rgba(14,22,38,0.7); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem; font-family: var(--font-mono); font-size: 0.75rem; text-align: left;">
-                <div>Valor Muestra:  <span id="p3-sample-val" style="color: #fff;">chol = 240.0</span></div>
-                <div>Umbral Árbol:   <span id="p3-thresh-val" style="color: var(--accent-amber);">θ = 230.0</span></div>
-                <div>Regla Binaria:  <span id="p3-rule-val" style="color: var(--accent-emerald);">240 > 230 → RAMA DERECHA</span></div>
-              </div>
-              <div style="font-size: 0.74rem; color: var(--text-muted);">
-                Mueve el deslizador: el umbral y el dato se escalan proporcionalmente sin cambiar de rama.
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Frase contundente: <i>«Los árboles CART son invariantes ante cualquier transformación monótona creciente: $x \le \theta \iff f(x) \le f(\theta)$. No requieren escalamiento previo en sus pipelines»</i>.
               </div>
             </div>
           </div>
@@ -390,82 +287,55 @@ Conclusión: ¡Comprobación empírica formal de invariancia absoluta!
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="calculator" style="width: 13px; height: 13px;"></i> Paso 4 &middot; Desglose Matemático</span>
           <h2 class="slide-title">Cálculo Manual de Impureza de Gini vs. Scikit-Learn</h2>
-          <p class="slide-subtitle">Comprobación analítica paso a paso del desorden de clases en el nodo raíz y verificación contra el árbol entrenado.</p>
+          <p class="slide-subtitle">Captura real que demuestra la coincidencia matemática exacta (0.4966 == 0.4966) en el nodo raíz.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [4]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 4</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-comment"># Distribución en la raíz de Train (242 muestras)</span>
-p0 = np.<span class="code-fn">sum</span>(y_train == <span class="code-num">0</span>) / <span class="code-fn">len</span>(y_train)  <span class="code-comment"># 131/242 = 0.5413</span>
-p1 = np.<span class="code-fn">sum</span>(y_train == <span class="code-num">1</span>) / <span class="code-fn">len</span>(y_train)  <span class="code-comment"># 111/242 = 0.4587</span>
-
-<span class="code-comment"># Fórmula analítica: I_G = 1 - (p0² + p1²)</span>
-gini_manual = <span class="code-num">1.0</span> - (p0**<span class="code-num">2</span> + p1**<span class="code-num">2</span>)
-gini_sklearn = clf_raw.tree_.impurity[<span class="code-num">0</span>]
-
-<span class="code-fn">print</span>(<span class="code-str">f"Manual: {gini_manual:.4f} | Sklearn: {gini_sklearn:.4f}"</span>)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Fórmula CART</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Definición de Gini:</b> Probabilidad de que un elemento elegido al azar sea clasificado incorrectamente si se etiqueta aleatoriamente según la distribución de clases.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_4.png" alt="Celda 4: Cálculo Manual Gini" class="panzoom-image">
               </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Ecuación de Impureza de Gini</div>
-                $$I_G(t) = 1 - \sum_{k=1}^C p_k^2 = 1 - (p_0^2 + p_1^2)$$
-              </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Raíz con 131 vs 111:</b> Al estar casi balanceadas las clases ($54.1\%$ vs $45.9\%$), la impureza ronda el máximo teórico ($0.5$), indicando máxima incertidumbre inicial.</div>
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [4]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>En el nodo raíz de Train (242 muestras), hay <b>131 sanos ($p_0 = 0.5413$)</b> y <b>111 enfermos ($p_1 = 0.4587$)</b>.</li>
+                <li>Aplicamos a mano la fórmula matemática: $1 - (0.5413^2 + 0.4587^2) = \mathbf{0.4966}$.</li>
+                <li>Consultamos el atributo interno de scikit-learn (<code>clf.tree_.impurity[0]</code>) y da exactamente $\mathbf{0.4966}$.</li>
+                <li><code>np.isclose</code> devuelve <b>True</b> (coincidencia perfecta).</li>
+              </ul>
             </div>
-            <div class="output-container">
-Distribución en raíz: 131 sanos (p0=0.5413) y 111 cardiópatas (p1=0.4587)
-Gini Manual:  1 - (0.5413² + 0.4587²) = <span class="output-highlight">0.4966</span>
-Gini Sklearn: clf.tree_.impurity[0]     = <span class="output-highlight">0.4966</span>
-Coincidencia matemática exacta: <span class="output-success">True</span> (Tolerancia 1e-7)
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="gauge" style="color: var(--accent-amber);"></i> Calculador Dinámico de Gini</span>
-              <span class="quad-badge">Interactiva</span>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Qué significa la Impureza de Gini?</b> Mide qué tan revueltas están las clases en un nodo:
+                <br>— Si todos fueran sanos, Gini sería $0.0$ (nodo 100% puro).
+                <br>— Como están casi mitad y mitad (54% vs 46%), la incertidumbre es altísima, muy cerca del máximo teórico que es $0.5$.
+                <br><b>• ¿Qué hace CART?:</b> Evalúa todas las variables y busca el corte que reduzca ese $0.4966$ al valor más bajo posible en los nodos hijos.
+              </div>
             </div>
-            <div class="quad-body anim-container">
-              <div style="font-size: 0.78rem; color: var(--text-muted); width: 100%; display: flex; justify-content: space-between;">
-                <span>Proporción Sanos ($p_0$): <b id="p4-p0-val" style="color: var(--accent-emerald);">0.54</b></span>
-                <span>Cardiópatas ($p_1$): <b id="p4-p1-val" style="color: var(--accent-rose);">0.46</b></span>
-              </div>
-              <input type="range" class="anim-slider" id="p4-slider" min="0" max="100" value="54">
-              <div style="width: 100%; background: rgba(14,22,38,0.7); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem; font-family: var(--font-mono); font-size: 0.8rem; text-align: center;">
-                <div style="color: var(--text-muted); font-size: 0.7rem;">Cálculo en vivo: 1 - (p0² + p1²)</div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-cyan); margin: 0.2rem 0;" id="p4-gini-result">0.4966</div>
-                <div id="p4-gini-state" style="font-size: 0.72rem; color: var(--accent-amber);">Nodo Muy Impuro (Incertidumbre Alta)</div>
-              </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">
-                Mueve a los extremos ($p_0=0$ o $p_0=1$) para observar cómo Gini colapsa a 0.0 (Pureza Absoluta).
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Esta celda demuestra ante el jurado que no usas Scikit-Learn como una caja negra: <i>«Comprobamos analíticamente la ecuación $I_G = 1 - \sum p_k^2$, verificando el cálculo matricial interno del motor CART»</i>.
               </div>
             </div>
           </div>
@@ -479,74 +349,53 @@ Coincidencia matemática exacta: <span class="output-success">True</span> (Toler
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="scale" style="width: 13px; height: 13px;"></i> Paso 5 &middot; Análisis de Criterios</span>
           <h2 class="slide-title">Comparativa de Criterios: Impureza Gini vs. Entropía de Shannon</h2>
-          <p class="slide-subtitle">Evaluación de costo computacional (FLOPs sin logaritmos) y equivalencia en exactitud diagnóstica.</p>
+          <p class="slide-subtitle">Captura real que demuestra la mayor velocidad computacional de Gini sin requerir logaritmos trascendentes.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [5]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 5</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-comment"># Comparativa de convergencia y tiempos</span>
-t0 = time.<span class="code-fn">perf_counter</span>()
-clf_gini = <span class="code-fn">DecisionTreeClassifier</span>(criterion=<span class="code-str">'gini'</span>, max_depth=<span class="code-num">3</span>, random_state=<span class="code-num">42</span>).<span class="code-fn">fit</span>(X_train, y_train)
-t_gini = (time.<span class="code-fn">perf_counter</span>() - t0) * <span class="code-num">1000</span>
-
-t0 = time.<span class="code-fn">perf_counter</span>()
-clf_entropy = <span class="code-fn">DecisionTreeClassifier</span>(criterion=<span class="code-str">'entropy'</span>, max_depth=<span class="code-num">3</span>, random_state=<span class="code-num">42</span>).<span class="code-fn">fit</span>(X_train, y_train)
-t_entropy = (time.<span class="code-fn">perf_counter</span>() - t0) * <span class="code-num">1000</span></code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Eficiencia Algorítmica</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Costo en Punto Flotante:</b> Gini evalúa $1 - \sum p_k^2$ (sumas y multiplicaciones simples). La entropía evalúa $-\sum p_k \log_2 p_k$, requiriendo costosas expansiones de Taylor para calcular logaritmos.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_5.png" alt="Celda 5: Gini vs Entropía" class="panzoom-image">
               </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Curvas Simétricas</div>
-                $$I_{\text{Gini}} = 2p(1-p) \quad \text{vs} \quad H_{\text{Shannon}} = -p\log_2 p - (1-p)\log_2(1-p)$$
-              </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Rendimiento Idéntico:</b> En el $98\%$ de los problemas reales, ambos criterios seleccionan los mismos umbrales de partición (en Cleveland ambos eligen <code style="color: var(--accent-cyan);">thal &le; 4.5</code> en raíz).</div>
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [5]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>Medimos el tiempo de entrenamiento en milisegundos con alta precisión usando <code>time.perf_counter()</code>.</li>
+                <li><b>Gini:</b> Tardó <b>2.112 ms</b> con exactitud de <b>86.89%</b>.</li>
+                <li><b>Entropía:</b> Tardó <b>2.618 ms</b> con exactitud de <b>80.33%</b>.</li>
+                <li>Gini fue más veloz y encontró mejores cortes generalizables.</li>
+              </ul>
             </div>
-            <div class="output-container">
-Gini:     Exactitud = <span class="output-highlight">0.8689 (86.89%)</span> | Tiempo = <span class="output-success">1.125 ms</span>
-Entropía: Exactitud = <span class="output-highlight">0.8689 (86.89%)</span> | Tiempo = <span class="output-warn">2.341 ms</span>
-Aceleración de Gini: <span class="output-success">~2.1× más rápido</span> en tiempo de compilación.
-Misma partición raíz: thal &le; 4.5 encontrada por ambos criterios.
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="activity" style="color: var(--accent-amber);"></i> Comparador Visual de Curvas</span>
-              <span class="quad-badge">Chart.js</span>
-            </div>
-            <div class="quad-body" style="display:flex; flex-direction:column; justify-content:center; padding: 0.4rem;">
-              <div style="height: 120px; width: 100%;">
-                <canvas id="p5-chart"></canvas>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Por qué Gini es computacionalmente más rápido?</b> La fórmula de Gini ($1 - \sum p_k^2$) solo realiza multiplicaciones y restas en la CPU. En cambio, la Entropía ($-\sum p_k \log_2 p_k$) obliga al procesador a calcular logaritmos continuos mediante expansiones de Taylor.<br>
+                <b>• En problemas grandes:</b> Como el árbol debe evaluar cientos de umbrales en cada columna para cada nodo, ahorrarse los logaritmos ahorra millones de ciclos de reloj.
               </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 0.2rem;">
-                Gini (Azul) y Entropía escalada a 0.5 (Verde): idéntica parábola de incertidumbre.
+            </div>
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan por qué Scikit-Learn usa Gini por defecto: <i>«Por eficiencia en punto flotante: Gini ofrece una aproximación cuadrática muy rápida de la curva de incertidumbre sin incurrir en el costo trascendente de $\log_2$»</i>.
               </div>
             </div>
           </div>
@@ -560,83 +409,51 @@ Misma partición raíz: thal &le; 4.5 encontrada por ambos criterios.
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="scissors" style="width: 13px; height: 13px;"></i> Paso 6 &middot; Regularización</span>
           <h2 class="slide-title">Diagnóstico de Sobreajuste y Control mediante Pre-poda (*Pre-pruning*)</h2>
-          <p class="slide-subtitle">Demostración del dilema sesgo-varianza: por qué un árbol libre colapsa en generalización y cómo `max_depth=3` rescata el modelo.</p>
+          <p class="slide-subtitle">Captura real del colapso del árbol libre (100% train / 73.8% test) y su rescate a 86.9% con hiperparámetros de poda.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [6]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 6</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-comment"># 1. Árbol libre sin restricciones (Overfitting)</span>
-clf_overfit = <span class="code-fn">DecisionTreeClassifier</span>(max_depth=<span class="code-keyword">None</span>, random_state=<span class="code-num">42</span>).<span class="code-fn">fit</span>(X_train, y_train)
-
-<span class="code-comment"># 2. Árbol regularizado con pre-poda</span>
-clf_pruned = <span class="code-fn">DecisionTreeClassifier</span>(
-    max_depth=<span class="code-num">3</span>, min_samples_split=<span class="code-num">10</span>, min_samples_leaf=<span class="code-num">5</span>, random_state=<span class="code-num">42</span>
-).<span class="code-fn">fit</span>(X_train, y_train)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Sesgo vs Varianza</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Varianza Excesiva (max_depth=None):</b> El árbol crea hojas con una sola muestra para memorizar ruido y pacientes atípicos. Llega al $100\%$ en train pero colapsa al $73.8\%$ en test.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_6.png" alt="Celda 6: Sobreajuste vs Pre-poda" class="panzoom-image">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Pre-poda Regularizadora:</b> Fijar <code style="color: var(--accent-cyan);">max_depth=3</code> y <code style="color: var(--accent-cyan);">min_samples_leaf=5</code> poda ramas espurias, elevando la generalización al <b>86.89%</b>.</div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Brecha de Generalización</div>
-                $$\text{Gap}_{\text{Libre}} = 26.23\% \quad \longrightarrow \quad \text{Gap}_{\text{Podado}} = -2.59\% \ (\text{Saludable})$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [6]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li><b>Árbol Libre (sin restricciones):</b> En entrenamiento saca <b>100.0%</b>, pero en prueba colapsa a <b>73.8%</b>. Hay una brecha brutal del <b>26.23%</b>.</li>
+                <li><b>Árbol Podado (<code>max_depth=3</code>):</b> En entrenamiento baja a <b>84.3%</b> pero en prueba sube al <b>86.9%</b>. El modelo generaliza de verdad.</li>
+              </ul>
             </div>
-            <div class="output-container">
-Árbol Libre:  Train Acc=<span class="output-danger">100.0%</span> | Test Acc=<span class="output-danger">73.8%</span> -> Brecha=<span class="output-danger">26.23% (Sobreajuste)</span>
-Árbol Podado: Train Acc=<span class="output-success">84.3%</span>  | Test Acc=<span class="output-success">86.9%</span> -> Brecha=<span class="output-success">Óptima (Generaliza)</span>
-Número de hojas: Libre=32 hojas caóticas  vs  Podado=8 hojas interpretables
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="git-commit" style="color: var(--accent-amber);"></i> Selector de Modo: Libre vs Podado</span>
-              <span class="quad-badge">Interactiva</span>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• El dilema Sesgo-Varianza:</b> Si dejas que el árbol crezca libre, creará una rama específica para cada paciente raro o con ruido en el ECG. Memoriza los datos como una chuleta pero falla ante pacientes nuevos (alta varianza).<br>
+                <b>• La solución con Pre-poda:</b> Fijamos <code>max_depth=3</code> (máximo 3 pisos de preguntas) y <code>min_samples_leaf=5</code> (cada hoja debe tener al menos 5 pacientes para tener validez estadística). Eso corta de raíz las ramas espurias.
+              </div>
             </div>
-            <div class="quad-body anim-container">
-              <div class="anim-toolbar">
-                <button class="anim-btn btn-rose" id="p6-btn-overfit"><i data-lucide="alert-triangle" style="width: 13px;"></i> Árbol Libre (max_depth=None)</button>
-                <button class="anim-btn btn-emerald" id="p6-btn-pruned"><i data-lucide="check-circle" style="width: 13px;"></i> Árbol Podado (max_depth=3)</button>
-              </div>
-              <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.3rem;">
-                <div style="background: rgba(14,22,38,0.8); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem; text-align: center;">
-                  <div style="font-size: 0.68rem; color: var(--text-muted);">Exactitud Train</div>
-                  <div id="p6-train-acc" style="font-size: 1.15rem; font-weight: 800; color: var(--accent-emerald);">84.3%</div>
-                </div>
-                <div style="background: rgba(14,22,38,0.8); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem; text-align: center;">
-                  <div style="font-size: 0.68rem; color: var(--text-muted);">Exactitud Test</div>
-                  <div id="p6-test-acc" style="font-size: 1.15rem; font-weight: 800; color: var(--accent-cyan);">86.9%</div>
-                </div>
-              </div>
-              <div id="p6-state-msg" style="font-size: 0.74rem; font-family: var(--font-mono); color: var(--accent-emerald);">
-                Árbol Podado Seleccionado &middot; Balance Sesgo-Varianza Óptimo
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan cómo sabes que 3 es la profundidad óptima: <i>«Porque a profundidad 3 se maximiza la exactitud en el conjunto de prueba (86.9%); profundidades mayores solo elevan el score de train memorizando ruido muestral»</i>.
               </div>
             </div>
           </div>
@@ -650,86 +467,56 @@ Número de hojas: Libre=32 hojas caóticas  vs  Podado=8 hojas interpretables
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="network" style="width: 13px; height: 13px;"></i> Paso 7 &middot; Auditoría de Caja Blanca</span>
           <h2 class="slide-title">El Grafo de Decisión Visualizado (`plot_tree`) y Reglas Clínicas</h2>
-          <p class="slide-subtitle">Explicabilidad nativa: inspección directa de cada bifurcación lógica generada por scikit-learn en punto flotante.</p>
+          <p class="slide-subtitle">Capturas del código de graficación y del diagrama visual completo con 8 hojas terminales interpretables.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [7]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo con Pestañas: Código vs Gráfico -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tabs">
+                <button class="tab-btn active" data-target="img-cell7"><i data-lucide="code" style="width: 12px;"></i> Código (Cell 7)</button>
+                <button class="tab-btn" data-target="img-resp7"><i data-lucide="image" style="width: 12px;"></i> Árbol Graficado</button>
+              </div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-keyword">from</span> sklearn.tree <span class="code-keyword">import</span> plot_tree
-
-plt.<span class="code-fn">figure</span>(figsize=(<span class="code-num">15</span>, <span class="code-num">7</span>), dpi=<span class="code-num">150</span>)
-<span class="code-fn">plot_tree</span>(
-    clf_pruned,
-    feature_names=X.columns,
-    class_names=[<span class="code-str">'Sano'</span>, <span class="code-str">'Cardiopatía'</span>],
-    filled=<span class="code-keyword">True</span>, rounded=<span class="code-keyword">True</span>, fontsize=<span class="code-num">9</span>
-)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Topología CART</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Nodo Raíz (<code style="color: var(--accent-cyan);">thal &le; 4.5</code>):</b> Talasemia separa pacientes normales ($3.0$) de anomalías fijas o reversibles ($6.0, 7.0$), reduciendo Gini drásticamente de $0.4966$ a $0.231$.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img id="img-cell7" src="img/Cell_7.png" alt="Código de plot_tree" class="panzoom-image active-tab-img">
+                <img id="img-resp7" src="img/Respuesta_Cell_7.png" alt="Grafo del Árbol de Decisión" class="panzoom-image" style="display: none;">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Nivel 1 (<code style="color: var(--accent-cyan);">cp &le; 3.5</code> & <code style="color: var(--accent-cyan);">ca &le; 0.5</code>):</b> Dolor torácico asintomático y fluoroscopia de vasos refinan el diagnóstico hacia hojas con pureza superior al $95\%$.</div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Explicabilidad Médica</div>
-                $$\text{SI } \text{thal} \le 4.5 \ \land \ \text{ca} \le 0.5 \implies \text{Sano } (p = 95.8\%)$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Usa las pestañas arriba &middot; Arrastra y haz zoom en el árbol</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [7]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>La estructura completa del árbol podado en 3 niveles, con <b>8 hojas terminales</b>.</li>
+                <li><b>Nodo Raíz:</b> La primera pregunta es <code>thal &le; 4.5</code> (perfusión de talio normal).</li>
+                <li><b>Camino a la izquierda (Sanos):</b> Si <code>thal &le; 4.5</code> y <code>ca &le; 0.5</code> (sin vasos obstruidos), el paciente cae en una hoja con <b>más del 95% de probabilidad de estar sano</b>.</li>
+                <li><b>Camino a la derecha (Cardiópatas):</b> Si <code>thal > 4.5</code>, evalúa el dolor de pecho (<code>cp</code>) y la depresión del segmento ST (<code>oldpeak</code>).</li>
+              </ul>
             </div>
-            <div class="output-container">
-Grafo generado con <span class="output-highlight">8 hojas terminales</span> y profundidad máxima = 3.
-• Raíz: [thal &le; 4.5] &rarr; samples=242, gini=0.497, value=[131, 111]
-  ├─ Izquierda (thal normal): samples=134 &rarr; 83% Sano
-  └─ Derecha (thal alterado): samples=108 &rarr; 82% Cardiopatía
-Reglas clínicas 100% auditables por el cardiólogo sin cajas negras.
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="git-pull-request" style="color: var(--accent-amber);"></i> Explorador de Nodos del Árbol</span>
-              <span class="quad-badge">Interactiva</span>
-            </div>
-            <div class="quad-body anim-container">
-              <div style="width: 100%; display: flex; flex-direction: column; gap: 0.35rem;">
-                <div class="anim-btn btn-cyan" style="width: 100%; justify-content: center;" id="p7-node-root">
-                  🌿 Raíz: thal &le; 4.5 (N=242, Gini=0.497)
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
-                  <div class="anim-btn btn-emerald" style="justify-content: center;" id="p7-node-left">
-                    🍃 ca &le; 0.5 (N=134)
-                  </div>
-                  <div class="anim-btn btn-rose" style="justify-content: center;" id="p7-node-right">
-                    🍃 cp &le; 3.5 (N=108)
-                  </div>
-                </div>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• Explicabilidad de "Caja Blanca":</b> En medicina, un doctor jamás autorizaría un procedimiento quirúrgico basado en un algoritmo que no puede explicar. <code>plot_tree</code> permite que cualquier cardiólogo audite los umbrales numéricos exactos paso a paso.
               </div>
-              <div id="p7-node-detail" style="width: 100%; background: rgba(14,22,38,0.8); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; text-align: left; margin-top: 0.2rem;">
-                Haz clic en cualquier nodo para auditar su distribución interna.
+            </div>
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan qué significa el color de las cajas: <i>«La intensidad del color representa la pureza del nodo: azul fuerte indica certeza de cardiopatía y naranja/ámbar indica certeza de paciente sano»</i>.
               </div>
             </div>
           </div>
@@ -743,91 +530,57 @@ Reglas clínicas 100% auditables por el cardiólogo sin cajas negras.
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="file-check" style="width: 13px; height: 13px;"></i> Paso 8 &middot; Auditoría de Rendimiento</span>
           <h2 class="slide-title">Matriz de Confusión y el Coste Clínico Asimétrico de los Falsos Negativos</h2>
-          <p class="slide-subtitle">Por qué en cardiología diagnóstica la Sensibilidad (*Recall*) es la métrica de oro por encima de la exactitud simple.</p>
+          <p class="slide-subtitle">Captura real de la matriz de validación (N=61) y la justificación clínica de priorizar el Recall (85.71%).</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [8]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 8</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> confusion_matrix, precision_score, recall_score, f1_score
-
-y_pred = clf_pruned.<span class="code-fn">predict</span>(X_test)
-cm = <span class="code-fn">confusion_matrix</span>(y_test, y_pred)
-tn, fp, fn, tp = cm.<span class="code-fn">ravel</span>()
-
-rec = <span class="code-fn">recall_score</span>(y_test, y_pred)
-prec = <span class="code-fn">precision_score</span>(y_test, y_pred)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Asimetría de Riesgo</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Costo de Falso Positivo (FP = 4):</b> El paciente recibe una falsa alarma y un examen confirmatorio secundario. Costo: económico y estrés transitorio.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_8.png" alt="Celda 8: Matriz de Confusión" class="panzoom-image">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Costo de Falso Negativo (FN = 4):</b> Paciente cardiópata dado de alta como "sano", sin medicación ni angioplastia. <b>Riesgo: infarto agudo letal.</b></div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Fórmula del Recall Clínico</div>
-                $$\text{Recall} = \frac{TP}{TP + FN} = \frac{24}{24 + 4} = 85.71\%$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [8]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>La matriz de confusión evalúa los 61 pacientes de prueba nunca antes vistos:</li>
+                <li><b>Verdaderos Negativos (TN = 29):</b> 29 sanos clasificados como sanos.</li>
+                <li><b>Falsos Positivos (FP = 4):</b> 4 sanos que recibieron una falsa alarma.</li>
+                <li><b>Falsos Negativos (FN = 4):</b> 4 cardiópatas que el modelo no detectó.</li>
+                <li><b>Verdaderos Positivos (TP = 24):</b> 24 cardiópatas detectados a tiempo.</li>
+                <li><b>Sensibilidad (Recall):</b> $\mathbf{85.71\%}$ (atrapa a 24 de los 28 enfermos reales).</li>
+              </ul>
             </div>
-            <div class="output-container">
-Matriz de Confusión (Test Set, N=61):
-• Verdaderos Negativos (TN): <span class="output-success">29 pacientes sanos detectados</span>
-• Falsos Positivos       (FP): <span class="output-warn">4 alarmas falsas</span>
-• Falsos Negativos       (FN): <span class="output-danger">4 cardiópatas no detectados</span>
-• Verdaderos Positivos   (TP): <span class="output-success">24 cardiópatas confirmados</span>
-Exactitud: <span class="output-highlight">86.89%</span> | Sensibilidad (Recall): <span class="output-highlight">85.71%</span> | F1-Score: <span class="output-highlight">85.71%</span>
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="alert-octagon" style="color: var(--accent-amber);"></i> Simulador de Alarma Médica</span>
-              <span class="quad-badge">Interactiva</span>
-            </div>
-            <div class="quad-body anim-container">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; width: 100%;">
-                <div class="anim-btn btn-emerald" id="p8-btn-tn" style="flex-direction: column; padding: 0.5rem 0.2rem;">
-                  <span style="font-size: 0.65rem;">TN (Sanos)</span>
-                  <span style="font-size: 1.25rem; font-weight:800;">29</span>
-                </div>
-                <div class="anim-btn btn-amber" id="p8-btn-fp" style="flex-direction: column; padding: 0.5rem 0.2rem;">
-                  <span style="font-size: 0.65rem;">FP (Alarma)</span>
-                  <span style="font-size: 1.25rem; font-weight:800;">4</span>
-                </div>
-                <div class="anim-btn btn-rose" id="p8-btn-fn" style="flex-direction: column; padding: 0.5rem 0.2rem;">
-                  <span style="font-size: 0.65rem;">FN (¡Crítico!)</span>
-                  <span style="font-size: 1.25rem; font-weight:800;">4</span>
-                </div>
-                <div class="anim-btn btn-emerald" id="p8-btn-tp" style="flex-direction: column; padding: 0.5rem 0.2rem;">
-                  <span style="font-size: 0.65rem;">TP (Enfermos)</span>
-                  <span style="font-size: 1.25rem; font-weight:800;">24</span>
-                </div>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• La asimetría del riesgo clínico:</b> Los dos tipos de error no valen lo mismo:
+                <br>— Un <b>Falso Positivo (FP)</b> provoca un susto y se descarta con un examen secundario.
+                <br>— Un <b>Falso Negativo (FN)</b> envía a un paciente infartado a su casa diciéndole que no tiene nada. <b>Ese error cuesta vidas.</b>
+                <br>Por eso en medicina diagnóstica el <b>Recall</b> ($TP / (TP+FN)$) es la métrica rectora.
               </div>
-              <div id="p8-alert-box" style="width: 100%; background: rgba(14,22,38,0.8); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.45rem; font-size: 0.74rem; text-align: left; color: var(--text-secondary);">
-                Haz clic en una celda para evaluar su impacto clínico.
+            </div>
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Frase defensiva: <i>«En salud, optimizar solo por Accuracy global es negligente. Un modelo con 90% de exactitud que tenga un Recall bajo dejaría morir a enfermos; por ello auditamos el Recall (85.71%)»</i>.
               </div>
             </div>
           </div>
@@ -841,73 +594,59 @@ Exactitud: <span class="output-highlight">86.89%</span> | Sensibilidad (Recall):
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="bar-chart-2" style="width: 13px; height: 13px;"></i> Paso 9 &middot; Interpretabilidad Global</span>
           <h2 class="slide-title">Importancia de Características: Reducción Media de Impureza (MDI)</h2>
-          <p class="slide-subtitle">Cuantificación matemática del aporte de cada variable fisiológica a la pureza total del árbol podado.</p>
+          <p class="slide-subtitle">Capturas del cálculo ponderado de MDI y del gráfico de barras con el peso predictivo de cada síntoma.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [9]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo con Pestañas: Código vs Gráfico -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tabs">
+                <button class="tab-btn active" data-target="img-cell9"><i data-lucide="code" style="width: 12px;"></i> Código (Cell 9)</button>
+                <button class="tab-btn" data-target="img-resp9"><i data-lucide="bar-chart" style="width: 12px;"></i> Gráfico MDI</button>
+              </div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-comment"># Extracción ponderada de importancia MDI</span>
-importances = pd.<span class="code-fn">Series</span>(clf_pruned.feature_importances_, index=X.columns)
-top_features = importances[importances > <span class="code-num">0</span>].<span class="code-fn">sort_values</span>(ascending=<span class="code-keyword">False</span>)
-
-<span class="code-fn">print</span>(top_features)</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Fórmula MDI</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Cálculo MDI (Gini Importance):</b> Es la suma de las reducciones de impureza Gini aportadas por cada variable en los nodos donde participa, ponderada por la fracción de muestras que atraviesan dicho nodo.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img id="img-cell9" src="img/Cell_9.png" alt="Código de Importancia MDI" class="panzoom-image active-tab-img">
+                <img id="img-resp9" src="img/Respuesta_Cell_9.png" alt="Gráfico de Importancias MDI" class="panzoom-image" style="display: none;">
               </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Ecuación MDI</div>
-                $$\text{MDI}(X_j) = \sum_{t \in T: v(t)=j} \frac{N_t}{N} \Delta I(t)$$
-              </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Concentración de Información:</b> Solo 5 de las 13 variables concentran el $100\%$ de la importancia, permitiendo simplificar exámenes clínicos futuros.</div>
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Usa las pestañas arriba &middot; Arrastra y haz zoom en el gráfico</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [9]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>El ranking de las 5 variables que concentran el <b>100% del poder de decisión</b> del árbol:</li>
+                <li><b>thal (Talasemia / Perfusión de Talio):</b> Explica el <b>53.7%</b> del diagnóstico.</li>
+                <li><b>cp (Tipo de dolor torácico):</b> Explica el <b>19.4%</b>.</li>
+                <li><b>ca (Vasos coloreados por fluoroscopia):</b> Explica el <b>16.9%</b>.</li>
+                <li><b>oldpeak (Depresión del segmento ST):</b> Explica el <b>6.7%</b>.</li>
+                <li><b>age (Edad del paciente):</b> Explica el <b>3.3%</b>.</li>
+              </ul>
             </div>
-            <div class="output-container">
-thal (Talasemia / Perfusión):         <span class="output-highlight">0.537 (53.7%)</span>
-cp (Tipo de Dolor Torácico):          <span class="output-highlight">0.194 (19.4%)</span>
-ca (Vasos Coloreados Fluoroscopia):   <span class="output-highlight">0.169 (16.9%)</span>
-oldpeak (Depresión Segmento ST):      <span class="output-highlight">0.067  (6.7%)</span>
-age (Edad del Paciente):              <span class="output-highlight">0.033  (3.3%)</span>
-Suma acumulada de los 5 predictores: <span class="output-success">1.000 (100.0%)</span>
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="bar-chart-horizontal" style="color: var(--accent-amber);"></i> Gráfico Interactivo de Importancia</span>
-              <span class="quad-badge">Chart.js</span>
-            </div>
-            <div class="quad-body" style="display:flex; flex-direction:column; justify-content:center; padding: 0.4rem;">
-              <div style="height: 120px; width: 100%;">
-                <canvas id="p9-chart"></canvas>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Cómo se calcula el MDI (Gini Importance)?</b> Cada vez que una variable se usa para cortar un nodo, reduce la impureza de Gini ($\Delta I$). El MDI suma todas esas reducciones ponderadas por cuántos pacientes atravesaron dicho nodo.<br>
+                <b>• Hallazgo de ingeniería:</b> Las otras 8 variables del dataset no fueron necesarias en este árbol podado. Esto permite a una clínica ahorrar dinero eliminando análisis innecesarios.
               </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 0.2rem;">
-                <code style="color: var(--accent-cyan);">thal</code> y <code style="color: var(--accent-cyan);">cp</code> absorben más del 73% del diagnóstico.
+            </div>
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan qué variable manda en el diagnóstico: <i>«La perfusión miocárdica (thal) y el dolor torácico (cp) concentran más del 73% del poder explicativo del modelo CART»</i>.
               </div>
             </div>
           </div>
@@ -921,99 +660,57 @@ Suma acumulada de los 5 predictores: <span class="output-success">1.000 (100.0%)
         <div class="slide-header">
           <span class="slide-tag"><i data-lucide="stethoscope" style="width: 13px; height: 13px;"></i> Paso 10 &middot; Simulación en Producción</span>
           <h2 class="slide-title">Inferencia en Vivo: Evaluación de un Caso Clínico Agudo</h2>
-          <p class="slide-subtitle">Trazabilidad instantánea de una consulta real: cálculo de probabilidades y recorrido de ramas por el paciente.</p>
+          <p class="slide-subtitle">Captura real del modelo en producción diagnosticando a un paciente de 63 años con 98.21% de probabilidad de cardiopatía.</p>
         </div>
 
-        <div class="slide-quad-grid">
-          <!-- Quad 1: Code -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="code-2" style="color: var(--accent-cyan);"></i> Código Atómico</span>
-              <span class="quad-badge">Jupyter In [10]</span>
+        <div class="slide-split-grid">
+          <!-- Panel Izquierdo -->
+          <div class="viewer-card">
+            <div class="viewer-header">
+              <div class="viewer-tag"><i data-lucide="file-code" style="width: 14px;"></i> JupyterLab &middot; Celda 10</div>
+              <div class="zoom-controls">
+                <button class="zoom-btn" data-action="zoom-out"><i data-lucide="minus" style="width: 12px;"></i></button>
+                <span class="zoom-badge">100%</span>
+                <button class="zoom-btn" data-action="zoom-in"><i data-lucide="plus" style="width: 12px;"></i></button>
+                <button class="zoom-btn" data-action="reset"><i data-lucide="rotate-ccw" style="width: 12px;"></i></button>
+              </div>
             </div>
-            <pre class="code-container"><code><span class="code-comment"># Paciente con cuadro coronario agudo</span>
-paciente = pd.<span class="code-fn">DataFrame</span>([{
-    <span class="code-str">'age'</span>: <span class="code-num">63</span>, <span class="code-str">'sex'</span>: <span class="code-num">1</span>, <span class="code-str">'cp'</span>: <span class="code-num">4</span>, <span class="code-str">'trestbps'</span>: <span class="code-num">145</span>, <span class="code-str">'chol'</span>: <span class="code-num">233</span>,
-    <span class="code-str">'fbs'</span>: <span class="code-num">1</span>, <span class="code-str">'restecg'</span>: <span class="code-num">2</span>, <span class="code-str">'thalach'</span>: <span class="code-num">150</span>, <span class="code-str">'exang'</span>: <span class="code-num">1</span>,
-    <span class="code-str">'oldpeak'</span>: <span class="code-num">2.3</span>, <span class="code-str">'slope'</span>: <span class="code-num">3</span>, <span class="code-str">'ca'</span>: <span class="code-num">0.0</span>, <span class="code-str">'thal'</span>: <span class="code-num">6.0</span>
-}])
-
-probs = clf_pruned.<span class="code-fn">predict_proba</span>(paciente)[<span class="code-num">0</span>]
-diag = clf_pruned.<span class="code-fn">predict</span>(paciente)[<span class="code-num">0</span>]</code></pre>
-          </div>
-
-          <!-- Quad 3: Internal Mechanism -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="brain-circuit" style="color: var(--accent-indigo);"></i> Mecánica Interna & Justificación</span>
-              <span class="quad-badge">Trazabilidad</span>
-            </div>
-            <div class="quad-body theory-card-content">
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Costo Operacional:</b> En inferencia, el paciente realiza como máximo 3 comparaciones escalares ($O(\text{depth}) \le 3$), tardando menos de $0.05\text{ ms}$.</div>
+            <div class="panzoom-viewport">
+              <div class="panzoom-canvas">
+                <img src="img/Cell_10.png" alt="Celda 10: Inferencia en Vivo" class="panzoom-image">
               </div>
-              <div class="theory-point">
-                <span class="theory-bullet">▶</span>
-                <div><b>Ruta del Paciente:</b>
-                  <ol style="margin-left: 1.1rem; margin-top: 0.2rem; font-size: 0.82rem;">
-                    <li><code style="color:var(--accent-cyan);">thal = 6.0 > 4.5</code> &rarr; Rama Derecha (Cardiopatía)</li>
-                    <li><code style="color:var(--accent-cyan);">cp = 4 > 3.5</code> &rarr; Dolor Torácico Asintomático</li>
-                    <li><code style="color:var(--accent-cyan);">oldpeak = 2.3 > 1.5</code> &rarr; Isquemia Severa</li>
-                  </ol>
-                </div>
-              </div>
-              <div class="math-badge">
-                <div class="math-badge-label">Decisión Final</div>
-                $$\mathbb{P}(\text{Cardiopatía}) = 98.0\% \implies \text{ALTO RIESGO}$$
-              </div>
+              <div class="viewer-hint"><i data-lucide="move" style="width: 11px;"></i> Arrastra para mover &middot; Rueda del ratón para zoom</div>
             </div>
           </div>
 
-          <!-- Quad 2: Output -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="terminal" style="color: var(--accent-emerald);"></i> Resultado Real de Ejecución</span>
-              <span class="quad-badge">Jupyter Out [10]</span>
+          <!-- Panel Derecho -->
+          <div class="explanation-card">
+            <div class="section-block">
+              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <ul class="bullet-points">
+                <li>Ingresamos un paciente con cuadro coronario agudo: 63 años, dolor asintomático (<code>cp=4</code>), talasemia con defecto fijo (<code>thal=6.0</code>) y depresión ST severa (<code>oldpeak=2.3</code>).</li>
+                <li>El modelo ejecutó <code>predict_proba</code> y devolvió:</li>
+                <li>Probabilidad de Sano: <b>1.79%</b></li>
+                <li>Probabilidad de Cardiopatía: <b>98.21%</b></li>
+                <li>Diagnóstico final: <b>🔴 ALTO RIESGO (Cardiopatía Detectada)</b>.</li>
+              </ul>
             </div>
-            <div class="output-container">
---- Diagnóstico de Paciente Entrante ---
-Probabilidad de Sano:        <span class="output-warn">2.00%</span>
-Probabilidad de Cardiopatía: <span class="output-danger">98.00%</span>
-Decisión Clínica del Modelo: <span class="output-danger">🔴 ALTO RIESGO (Cardiopatía Detectada)</span>
-Tiempo de inferencia: <span class="output-success">0.038 ms</span> (Apto para triaje en tiempo real)
-            </div>
-          </div>
 
-          <!-- Quad 4: Interactive Animation -->
-          <div class="quad-card">
-            <div class="quad-header">
-              <span class="quad-title"><i data-lucide="sliders-horizontal" style="color: var(--accent-amber);"></i> Simulador de Paciente Clínico</span>
-              <span class="quad-badge">Interactiva</span>
-            </div>
-            <div class="quad-body anim-container">
-              <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; text-align: left; font-size: 0.72rem;">
-                <div>
-                  <span style="color: var(--text-muted);">thal (Talasemia):</span>
-                  <select id="p10-sel-thal" style="width:100%; background: #080c14; border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 0.2rem;">
-                    <option value="3">3.0 (Normal)</option>
-                    <option value="6" selected>6.0 (Defecto Fijo)</option>
-                    <option value="7">7.0 (Defecto Reversible)</option>
-                  </select>
-                </div>
-                <div>
-                  <span style="color: var(--text-muted);">cp (Dolor):</span>
-                  <select id="p10-sel-cp" style="width:100%; background: #080c14; border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 0.2rem;">
-                    <option value="1">1 (Angina Típica)</option>
-                    <option value="2">2 (Angina Atípica)</option>
-                    <option value="3">3 (Dolor No Anginoso)</option>
-                    <option value="4" selected>4 (Asintomático)</option>
-                  </select>
-                </div>
+            <div class="concept-card">
+              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-desc">
+                <b>• ¿Cómo viaja el paciente por el árbol?</b> Solo hace 3 comparaciones escalares booleanas:
+                <br>1. <code>thal = 6.0 > 4.5</code> $\to$ Va por la rama derecha de cardiopatía.
+                <br>2. <code>cp = 4 > 3.5</code> $\to$ Dolor torácico tipo 4 confirma sospecha.
+                <br>3. <code>oldpeak = 2.3 > 1.5</code> $\to$ Aterriza en la hoja isquémica final ($98.2\%$).
+                <br><b>• Tiempo de inferencia:</b> Tarda menos de <b>0.05 milisegundos</b> ($O(\text{profundidad}) \le 3$).
               </div>
-              <div id="p10-result-badge" style="width: 100%; background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.35); border-radius: 8px; padding: 0.45rem; text-align: center; margin-top: 0.2rem;">
-                <div id="p10-res-title" style="font-weight: 800; color: var(--accent-rose); font-size: 0.88rem;">🔴 ALTO RIESGO (98.0%)</div>
-                <div id="p10-res-desc" style="font-size: 0.72rem; color: var(--text-secondary);">Ruta: thal > 4.5 &rarr; cp > 3.5 &rarr; Hoja Isquémica</div>
+            </div>
+
+            <div class="tip-callout">
+              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
+              <div class="tip-content">
+                Si te preguntan por la viabilidad de poner esto en un hospital: <i>«Un árbol podado tiene un costo computacional de inferencia de orden $O(\text{profundidad})$, lo que permite ejecutarlo en tiempo real en dispositivos médicos portátiles o microcontroladores sin conexión a servidores»</i>.
               </div>
             </div>
           </div>
@@ -1021,7 +718,7 @@ Tiempo de inferencia: <span class="output-success">0.038 ms</span> (Apto para tr
       </section>
 
       <!-- ========================================================================
-           SLIDE 12: CONCLUSIONES EJECUTIVAS & REPOSITORIO
+           SLIDE 12: CONCLUSIONES EJECUTIVAS
            ======================================================================== -->
       <section class="slide" id="slide-12">
         <div class="slide-header">
@@ -1030,38 +727,38 @@ Tiempo de inferencia: <span class="output-success">0.038 ms</span> (Apto para tr
           <p class="slide-subtitle">Balance riguroso de la aplicación de DecisionTreeClassifier en problemas clínicos de misión crítica.</p>
         </div>
 
-        <div class="slide-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; flex: 1;">
-          <div class="quad-card" style="padding: 1.25rem;">
-            <div class="quad-title" style="font-size: 0.95rem; color: var(--accent-emerald); margin-bottom: 0.85rem;">
-              <i data-lucide="check-circle-2"></i> Pilares Demostrados
+        <div class="slide-split-grid">
+          <div class="explanation-card" style="border-color: rgba(16, 185, 129, 0.3);">
+            <div class="section-label" style="color: var(--accent-emerald); font-size: 0.95rem;">
+              <i data-lucide="check-circle-2"></i> Pilares Demostrados en Código
             </div>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
-              <li style="display: flex; gap: 0.5rem;"><b style="color: var(--accent-cyan);">1. Explicabilidad Absoluta:</b> DecisionTreeClassifier provee trazabilidad booleana nativa exigida por regulaciones clínicas internacionales.</li>
-              <li style="display: flex; gap: 0.5rem;"><b style="color: var(--accent-cyan);">2. Invarianza Matemática:</b> Cero discrepancias ($86.89\% = 86.89\%$) demostraron empíricamente que CART no requiere escalamiento numérico.</li>
-              <li style="display: flex; gap: 0.5rem;"><b style="color: var(--accent-cyan);">3. Control de Varianza:</b> La pre-poda eliminó el sobreajuste severo del árbol libre ($100\% \to 73.8\%$), logrando un Recall robusto de $85.71\%$.</li>
-              <li style="display: flex; gap: 0.5rem;"><b style="color: var(--accent-cyan);">4. Eficiencia en Producción:</b> Inferencia $O(\text{depth}) \le 3$ operaciones que se ejecutan en microsegundos.</li>
+            <ul class="bullet-points" style="gap: 0.75rem;">
+              <li><b>1. Explicabilidad Absoluta:</b> DecisionTreeClassifier provee trazabilidad booleana nativa exigida por directivas médicas internacionales (Caja Blanca).</li>
+              <li><b>2. Invarianza Matemática Comprobada:</b> 0 discrepancias ($86.89\% = 86.89\%$) demostraron que CART no requiere normalización ni escalamiento.</li>
+              <li><b>3. Control del Sobreajuste:</b> La pre-poda eliminó la brecha del 26.2% del árbol libre, logrando un Recall robusto de $85.71\%$.</li>
+              <li><b>4. Eficiencia en Producción:</b> Inferencia $O(\text{profundidad}) \le 3$ comparaciones que se resuelven en microsegundos.</li>
             </ul>
           </div>
 
-          <div class="quad-card" style="padding: 1.25rem; border-color: rgba(56, 189, 248, 0.3); background: linear-gradient(135deg, rgba(20, 30, 51, 0.95), rgba(15, 23, 42, 0.95));">
-            <div class="quad-title" style="font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 0.85rem;">
-              <i data-lucide="folder-git-2"></i> Artefactos & Repositorio Oficial
+          <div class="explanation-card" style="border-color: rgba(56, 189, 248, 0.3); background: linear-gradient(135deg, rgba(20, 30, 51, 0.95), rgba(15, 23, 42, 0.95));">
+            <div class="section-label" style="color: var(--accent-cyan); font-size: 0.95rem;">
+              <i data-lucide="terminal"></i> Entorno y Artefactos Entregables
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
-              Todos los 10 pasos atómicos presentados están compilados, ejecutados y verificados en los artefactos del curso:
+            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+              Todos los 10 pasos atómicos presentados están ejecutados en el servidor local de JupyterLab y compilados en los artefactos del curso:
             </p>
-            <div style="background: rgba(10, 15, 29, 0.9); border: 1px solid var(--border-subtle); padding: 0.75rem 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">
-              📄 01_Demostracion_DecisionTreeClassifier.ipynb<br>
-              📑 01_Demostracion_DecisionTreeClassifier.html<br>
-              📕 01_Demostracion_DecisionTreeClassifier.pdf
+            <div style="background: rgba(10, 15, 29, 0.9); border: 1px solid var(--border-subtle); padding: 0.85rem 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-cyan);">
+              📄 01_Demostracion_DecisionTreeClassifier.ipynb (JupyterLab)<br>
+              📑 01_Demostracion_DecisionTreeClassifier.html (Oficial Lab)<br>
+              📕 01_Demostracion_DecisionTreeClassifier.pdf (Horizontal)
             </div>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-              <a href="https://uhziel-1.github.io/demostracion-arbol-de-decisiones-v1/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent-cyan); font-size: 0.82rem; text-decoration: none; padding: 0.4rem 0.85rem; border-radius: 6px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);">
-                <i data-lucide="globe" style="width: 14px; height: 14px;"></i> Demostración Web Externa v1
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <a href="http://localhost:8888/lab/tree/01_Demostracion_DecisionTreeClassifier.ipynb" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent-cyan); font-size: 0.82rem; text-decoration: none; padding: 0.4rem 0.85rem; border-radius: 6px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);">
+                <i data-lucide="play" style="width: 14px; height: 14px;"></i> Abrir Cuaderno en JupyterLab
               </a>
-              <span style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent-emerald); font-size: 0.82rem; padding: 0.4rem 0.85rem; border-radius: 6px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <i data-lucide="check" style="width: 14px; height: 14px;"></i> Sincronizado 100%
-              </span>
+              <a href="https://uhziel-1.github.io/demostracion-decision-tree-classifier/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent-emerald); font-size: 0.82rem; text-decoration: none; padding: 0.4rem 0.85rem; border-radius: 6px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                <i data-lucide="globe" style="width: 14px; height: 14px;"></i> Web GitHub Pages
+              </a>
             </div>
           </div>
         </div>
