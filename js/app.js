@@ -68,11 +68,27 @@ function initSlideEngine() {
       dot.classList.toggle("active", i === currentSlide);
     });
 
+    if (history.replaceState) {
+      history.replaceState(null, null, "#" + (currentSlide + 1));
+    }
+
     setTimeout(() => {
       initKaTeX();
       initLucide();
     }, 50);
   }
+
+  // Comprobar si hay un slide indicado en el hash o query param (ej: #3 o ?slide=3)
+  const hash = window.location.hash.replace('#', '');
+  const urlParams = new URLSearchParams(window.location.search);
+  const slideParam = urlParams.get('slide') || hash;
+  if (slideParam) {
+    const parsed = parseInt(slideParam, 10);
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= totalSlides) {
+      currentSlide = parsed - 1;
+    }
+  }
+  updateSlideUI();
 
   window.goToSlide = function(index) {
     if (index >= 0 && index < totalSlides) {

@@ -18,8 +18,8 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-  <!-- Hoja de Estilos de la Presentación (con cache-busting v4) -->
-  <link rel="stylesheet" href="css/style.css?v=4.0">
+  <!-- Hoja de Estilos de la Presentación (con cache-busting v5) -->
+  <link rel="stylesheet" href="css/style.css?v=5.0">
   
   <style>
     /* Estilos directos garantizados para la Diapositiva 2 (Diccionario de Datos) */
@@ -140,6 +140,10 @@
       </div>
 
       <div class="header-right">
+        <a href="https://uhziel-1.github.io/demostracion-arbol-de-decisiones-v1/" target="_blank" class="meta-pill" style="color: var(--accent-cyan); text-decoration: none; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.28rem 0.7rem; border-radius: 6px; background: rgba(56, 189, 248, 0.12); font-weight: 600; display: inline-flex; align-items: center; gap: 0.45rem; transition: all 0.2s ease;" title="Abrir Demostración Teórica Árbol de Decisiones v1">
+          <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+          <span>Demo Árbol de Decisiones (v1)</span>
+        </a>
         <div class="meta-pill">
           <i data-lucide="heart-pulse" style="width: 15px; height: 15px; color: var(--accent-rose);"></i>
           <span>Cleveland Dataset (303 Pacientes)</span>
@@ -395,26 +399,20 @@
           <!-- Panel Derecho: Explicación Fácil de Entender -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>El código lee el archivo <code>heart-disease-cleveland.csv</code> y detecta que faltaban datos codificados como signos de interrogación <code>'?'</code>.</li>
-                <li>La tabla de salida (<code>df.head(3)</code>) muestra las primeras filas ya limpias con <b>303 pacientes y 14 columnas</b>.</li>
-                <li>La columna final <code>target</code> ahora solo tiene valores <b>0 (Sano)</b> o <b>1 (Cardiopatía)</b>.</li>
+                <li><b>Lectura de datos:</b> Cargamos el archivo CSV de Cleveland (<code>heart-disease-cleveland.csv</code>), indicando que los caracteres <code>'?'</code> se reconozcan como valores vacíos (<code>NaN</code>).</li>
+                <li><b>Detección e imputación:</b> Detectamos 6 valores faltantes (4 en <code>ca</code> y 2 en <code>thal</code>). Los rellenamos con la <b>mediana</b> (<code>ca = 0.0</code>) y la <b>moda</b> (<code>thal = 3.0</code>) para no perder pacientes.</li>
+                <li><b>Binarización del objetivo:</b> Convertimos la columna <code>target</code>: si el paciente tiene <code>0</code> se queda en <b>0 (Sano)</b>; si tiene valores 1, 2, 3 o 4 se convierte en <b>1 (Cardiopatía)</b>.</li>
+                <li><b>Resultado visible:</b> La tabla <code>df.head(3)</code> muestra las primeras 3 filas ya limpias, con los <b>303 pacientes</b> listos y sus 14 columnas completas.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Por qué no borramos a los pacientes con nulos?</b> Solo 6 valores faltaban (4 en <code>ca</code> y 2 en <code>thal</code>). En una muestra pequeña de 303 pacientes, eliminar filas reduciría la calidad del entrenamiento. Por eso los imputamos con la <b>mediana</b> y la <b>moda</b>.<br>
-                <b>• ¿Por qué binarizar el target?</b> El dataset original tenía 5 niveles de gravedad (0 a 4). Al cardiólogo le interesa en primer lugar una decisión binaria: <i>¿El paciente requiere tratamiento coronario inmediato o está sano?</i> Por eso todo valor $>0$ se vuelve 1.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan por qué imputaste con mediana en <code>ca</code>: <i>«La variable fluoroscopia <code>ca</code> es discreta y asimétrica; la mediana (0.0) representa el valor clínico central robusto que no introduce distorsión artificial en el árbol»</i>.
+                <b>• ¿Por qué no eliminamos las filas con nulos?:</b> En Cleveland solo tenemos una muestra pequeña de 303 pacientes. Si elimináramos filas con datos faltantes, perderíamos información clínica valiosa para el árbol. Imputar con mediana y moda conserva el tamaño muestral sin sesgar la distribución.<br>
+                <b>• ¿Por qué binarizamos el diagnóstico?:</b> El dataset original medía 5 grados de estrechamiento de arterias (0 a 4). Sin embargo, en la práctica médica de urgencias, la primera pregunta crítica es binaria: <i>¿El paciente padece cardiopatía isquémica que requiere atención inmediata o está sano?</i> Simplificarlo a dos clases ($0$ vs $1$) permite entrenar un clasificador CART directo y de alta confiabilidad.
               </div>
             </div>
           </div>
@@ -454,25 +452,21 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>Dividimos los 303 pacientes en: <b>242 para entrenar (80%)</b> y <b>61 para evaluar (20%)</b>.</li>
-                <li>Fíjate en las proporciones de salida: Train tiene <b>45.87%</b> de cardiópatas y Test tiene <b>45.90%</b>. La diferencia es prácticamente cero.</li>
+                <li><b>Separación de variables:</b> Dividimos la tabla en dos objetos: la matriz $X$ con los 13 predictores clínicos y el vector $y$ con el diagnóstico real (0 o 1).</li>
+                <li><b>División 80:20:</b> Ejecutamos <code>train_test_split</code> con <code>test_size=0.20</code>, separando a los 303 pacientes en: <b>242 para entrenar (80%)</b> y <b>61 para evaluar (20%)</b>.</li>
+                <li><b>Control y estratificación:</b> Fijamos <code>random_state=42</code> para que el reparto sea determinista y <code>stratify=y</code> para respetar la proporción de enfermos.</li>
+                <li><b>Resultado visible:</b> La consola imprime las dimensiones y confirma que el grupo Train tiene <b>45.87%</b> de cardiópatas y el grupo Test tiene <b>45.90%</b> (idéntica prevalencia médica).</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Qué hace <code>random_state=42</code>?</b> La partición es aleatoria. Si no fijamos una semilla, cada vez que corras el código los números cambian. El <code>42</code> asegura que el experimento sea <b>100% determinista y reproducible</b> cuando el profesor lo revise.<br>
-                <b>• ¿Qué hace <code>stratify=y</code>?</b> Si se divide al azar sin control, la suerte podría dejar a casi todos los enfermos en Train y puros sanos en Test (o viceversa). <code>stratify=y</code> fuerza a que ambos conjuntos tengan la misma proporción médica original.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan qué pasaría sin estratificación: <i>«Correríamos el riesgo de sesgo de partición (data drift), donde el conjunto de test no reflejaría la prevalencia epidemiológica real de la población clínica»</i>.
+                <b>• ¿Por qué separar datos en Train y Test?:</b> Un modelo jamás debe evaluarse con los mismos datos que usó para aprender, ya que podría simplemente memorizarlos. El conjunto de prueba simula la llegada de pacientes futuros al hospital que el árbol nunca vio.<br>
+                <b>• ¿Por qué fijar la semilla (<code>42</code>)?:</b> Hace que el experimento sea 100% reproducible: cualquier persona o docente que ejecute el cuaderno obtendrá exactamente las mismas particiones y números.<br>
+                <b>• ¿Por qué usar <code>stratify=y</code>?:</b> Si la división fuera totalmente al azar, por azar estadístico podríamos dejar casi puros pacientes enfermos en Train y puros sanos en Test (o al revés). La estratificación asegura que ambos conjuntos tengan la misma proporción real de la enfermedad.
               </div>
             </div>
           </div>
@@ -512,26 +506,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>Entrenamos dos modelos con los mismos hiperparámetros: uno con datos crudos y otro normalizado con <code>StandardScaler</code>.</li>
-                <li>Ambos obtuvieron exactamente: <b>0.8689 (86.89%)</b> de exactitud en los 61 pacientes de test.</li>
-                <li>La diferencia entre ambos modelos fue de <b>0.0000</b> (cero discrepancias caso por caso).</li>
+                <li><b>Estandarización:</b> Creamos una copia de los datos y aplicamos <code>StandardScaler</code> a las variables predictoras, dejándolas con media 0 y varianza 1.</li>
+                <li><b>Entrenamiento doble:</b> Entrenamos dos árboles con la misma configuración: Modelo A con los datos originales (crudos) y Modelo B con los datos estandarizados.</li>
+                <li><b>Evaluación y resta:</b> Calculamos la exactitud (accuracy) de ambos sobre los 61 pacientes de prueba y restamos sus resultados caso por caso.</li>
+                <li><b>Resultado visible:</b> La consola imprime que ambos modelos lograron exactamente <b>0.8689 (86.89%)</b>, con una diferencia absoluta de <b>0.0000</b> (cero discrepancias).</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Por qué a CART no le importa la escala?</b> Modelos como KNN o Redes Neuronales calculan distancias euclidianas ($\sqrt{\sum (x_i - y_i)^2}$). En ellos, si el colesterol vale 300 y los vasos fluoroscópicos valen 2, el colesterol aplasta a las demás variables.<br>
-                <b>• El Teorema de Orden:</b> Los árboles de decisión <b>NO calculan distancias</b>. Solo preguntan: <i>¿$x_j \le \text{umbral}$?</i> Si multiplicas el colesterol o lo normalizas, el orden relativo de los pacientes sigue siendo idéntico. El árbol simplemente traslada el umbral numérico sin cambiar ninguna decisión.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Frase contundente: <i>«Los árboles CART son invariantes ante cualquier transformación monótona creciente: $x \le \theta \iff f(x) \le f(\theta)$. No requieren escalamiento previo en sus pipelines»</i>.
+                <b>• Comprobación de una propiedad matemática única de CART:</b> En algoritmos que miden distancias (como KNN o Redes Neuronales), si el colesterol vale 300 mg/dL y los vasos fluoroscópicos valen 2, el colesterol aplasta a las demás variables si no se estandarizan.<br>
+                <b>• Por qué en nuestro caso no hace falta normalizar:</b> Los árboles de decisión no miden distancias; únicamente realizan cortes ordenados de tipo <i>¿$x_j \le \text{umbral}$?</i>. Estandarizar los datos cambia el valor del corte numérico pero preserva exactamente el orden relativo de los pacientes. Esto ahorra transformaciones innecesarias en el pipeline clínico.
               </div>
             </div>
           </div>
@@ -571,29 +559,21 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>En el nodo raíz de Train (242 muestras), hay <b>131 sanos ($p_0 = 0.5413$)</b> y <b>111 enfermos ($p_1 = 0.4587$)</b>.</li>
-                <li>Aplicamos a mano la fórmula matemática: $1 - (0.5413^2 + 0.4587^2) = \mathbf{0.4966}$.</li>
-                <li>Consultamos el atributo interno de scikit-learn (<code>clf.tree_.impurity[0]</code>) y da exactamente $\mathbf{0.4966}$.</li>
-                <li><code>np.isclose</code> devuelve <b>True</b> (coincidencia perfecta).</li>
+                <li><b>Conteo en el nodo raíz:</b> Contamos las muestras de entrenamiento (242 pacientes): <b>131 sanos</b> ($y=0$) y <b>111 enfermos</b> ($y=1$).</li>
+                <li><b>Cálculo de proporciones:</b> Calculamos las probabilidades de cada clase: $p_0 = 131/242 = 0.5413$ y $p_1 = 111/242 = 0.4587$.</li>
+                <li><b>Fórmula manual:</b> Aplicamos la ecuación de Gini: $I_G = 1 - (p_0^2 + p_1^2) = 1 - (0.5413^2 + 0.4587^2) = \mathbf{0.4966}$.</li>
+                <li><b>Verificación con la librería:</b> Leemos <code>clf.tree_.impurity[0]</code> directamente de Scikit-Learn y comparamos con <code>np.isclose</code>.</li>
+                <li><b>Resultado visible:</b> La consola imprime <code>Gini Manual: 0.4966</code>, <code>Gini Scikit-Learn: 0.4966</code> y confirma la coincidencia con un contundente <b>True</b>.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Qué significa la Impureza de Gini?</b> Mide qué tan revueltas están las clases en un nodo:
-                <br>— Si todos fueran sanos, Gini sería $0.0$ (nodo 100% puro).
-                <br>— Como están casi mitad y mitad (54% vs 46%), la incertidumbre es altísima, muy cerca del máximo teórico que es $0.5$.
-                <br><b>• ¿Qué hace CART?:</b> Evalúa todas las variables y busca el corte que reduzca ese $0.4966$ al valor más bajo posible en los nodos hijos.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Esta celda demuestra ante el jurado que no usas Scikit-Learn como una caja negra: <i>«Comprobamos analíticamente la ecuación $I_G = 1 - \sum p_k^2$, verificando el cálculo matricial interno del motor CART»</i>.
+                <b>• Desmitificar la "caja negra":</b> Este paso demuestra matemáticamente cómo funciona el motor interno de Scikit-Learn por debajo del código, comprobando que calcula fielmente la fórmula de impureza de CART.<br>
+                <b>• ¿Qué significa el 0.4966 en nuestro caso?:</b> La impureza de Gini mide el grado de desorden de las clases: si todos fueran sanos el Gini sería 0.0 (máxima pureza). Como al inicio tenemos casi mitad sanos (54%) y mitad enfermos (46%), el desorden es altísimo (cerca del máximo teórico de 0.5). El trabajo del árbol en los siguientes pasos será encontrar cortes clínicos que reduzcan este número hacia 0.0 en cada rama.
               </div>
             </div>
           </div>
@@ -633,27 +613,21 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>Medimos el tiempo de entrenamiento en milisegundos con alta precisión usando <code>time.perf_counter()</code>.</li>
-                <li><b>Gini:</b> Tardó <b>2.112 ms</b> con exactitud de <b>86.89%</b>.</li>
-                <li><b>Entropía:</b> Tardó <b>2.618 ms</b> con exactitud de <b>80.33%</b>.</li>
-                <li>Gini fue más veloz y encontró mejores cortes generalizables.</li>
+                <li><b>Entrenamiento con Gini:</b> Instanciamos el árbol con <code>criterion='gini'</code>, medimos el tiempo exacto con <code>time.perf_counter()</code> y evaluamos su exactitud.</li>
+                <li><b>Entrenamiento con Entropía:</b> Instanciamos un árbol gemelo cambiando el criterio a <code>criterion='entropy'</code> (Entropía de Shannon) y cronometramos su ejecución.</li>
+                <li><b>Comparación directa:</b> Mostramos en una tabla comparativa el tiempo en milisegundos y el porcentaje de exactitud sobre los pacientes de test.</li>
+                <li><b>Resultado visible:</b> <b>Gini</b> tardó <b>2.112 ms</b> con <b>86.89%</b> de exactitud, mientras que <b>Entropía</b> tardó <b>2.618 ms</b> con <b>80.33%</b> de exactitud.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Por qué Gini es computacionalmente más rápido?</b> La fórmula de Gini ($1 - \sum p_k^2$) solo realiza multiplicaciones y restas en la CPU. En cambio, la Entropía ($-\sum p_k \log_2 p_k$) obliga al procesador a calcular logaritmos continuos mediante expansiones de Taylor.<br>
-                <b>• En problemas grandes:</b> Como el árbol debe evaluar cientos de umbrales en cada columna para cada nodo, ahorrarse los logaritmos ahorra millones de ciclos de reloj.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan por qué Scikit-Learn usa Gini por defecto: <i>«Por eficiencia en punto flotante: Gini ofrece una aproximación cuadrática muy rápida de la curva de incertidumbre sin incurrir en el costo trascendente de $\log_2$»</i>.
+                <b>• Justificar técnicamente el criterio de división:</b> Necesitábamos sustentar con evidencia por qué elegimos Gini en lugar de Entropía para clasificar a los pacientes.<br>
+                <b>• ¿Por qué Gini es computacionalmente más rápido?:</b> La fórmula de Gini ($1 - \sum p_k^2$) solo realiza sumas, restas y multiplicaciones simples en la CPU. La Entropía ($-\sum p_k \log_2 p_k$) obliga al procesador a calcular logaritmos continuos, consumiendo más ciclos de reloj.<br>
+                <b>• En nuestro caso de salud:</b> Gini no solo fue un 19% más rápido, sino que además encontró divisiones con mejor capacidad de generalización sobre los 61 pacientes de prueba.
               </div>
             </div>
           </div>
@@ -693,25 +667,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li><b>Árbol Libre (sin restricciones):</b> En entrenamiento saca <b>100.0%</b>, pero en prueba colapsa a <b>73.8%</b>. Hay una brecha brutal del <b>26.23%</b>.</li>
-                <li><b>Árbol Podado (<code>max_depth=3</code>):</b> En entrenamiento baja a <b>84.3%</b> pero en prueba sube al <b>86.9%</b>. El modelo generaliza de verdad.</li>
+                <li><b>Árbol sin podar:</b> Entrenamos un árbol sin límites de profundidad y calculamos su puntaje en los datos de entrenamiento y en los de prueba.</li>
+                <li><b>Árbol podado (Pre-poda):</b> Entrenamos otro árbol fijando dos límites: profundidad máxima de 3 niveles (<code>max_depth=3</code>) y mínimo 5 pacientes por hoja (<code>min_samples_leaf=5</code>).</li>
+                <li><b>Comparación de brechas:</b> Restamos el rendimiento de Train menos el de Test para detectar sobreajuste (overfitting).</li>
+                <li><b>Resultado visible:</b> El árbol libre obtuvo <b>100.0%</b> en Train pero cayó a <b>73.77%</b> en Test (brecha de <b>26.23%</b>). El árbol podado bajó a 84.30% en Train pero alcanzó <b>86.89%</b> en Test.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• El dilema Sesgo-Varianza:</b> Si dejas que el árbol crezca libre, creará una rama específica para cada paciente raro o con ruido en el ECG. Memoriza los datos como una chuleta pero falla ante pacientes nuevos (alta varianza).<br>
-                <b>• La solución con Pre-poda:</b> Fijamos <code>max_depth=3</code> (máximo 3 pisos de preguntas) y <code>min_samples_leaf=5</code> (cada hoja debe tener al menos 5 pacientes para tener validez estadística). Eso corta de raíz las ramas espurias.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan cómo sabes que 3 es la profundidad óptima: <i>«Porque a profundidad 3 se maximiza la exactitud en el conjunto de prueba (86.9%); profundidades mayores solo elevan el score de train memorizando ruido muestral»</i>.
+                <b>• Evitar que el árbol memorice ruido:</b> Un árbol sin restricciones se divide hasta que cada paciente atípico o con ruido en el ECG tenga su propia hoja. Se memoriza la muestra de entrenamiento como una chuleta, pero fracasa con pacientes nuevos.<br>
+                <b>• Por qué aplicamos pre-poda en nuestro caso:</b> Limitar el árbol a 3 preguntas sucesivas y exigir al menos 5 pacientes por grupo corta de raíz las ramas espurias. Esto obligó al modelo a quedarse solo con las reglas médicas principales y sólidas, aumentando la precisión real en pacientes nuevos del 73.8% al 86.9%.
               </div>
             </div>
           </div>
@@ -755,26 +724,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>La estructura completa del árbol podado en 3 niveles, con <b>8 hojas terminales</b>.</li>
-                <li><b>Nodo Raíz:</b> La primera pregunta es <code>thal &le; 4.5</code> (perfusión de talio normal).</li>
-                <li><b>Camino a la izquierda (Sanos):</b> Si <code>thal &le; 4.5</code> y <code>ca &le; 0.5</code> (sin vasos obstruidos), el paciente cae en una hoja con <b>más del 95% de probabilidad de estar sano</b>.</li>
-                <li><b>Camino a la derecha (Cardiópatas):</b> Si <code>thal > 4.5</code>, evalúa el dolor de pecho (<code>cp</code>) y la depresión del segmento ST (<code>oldpeak</code>).</li>
+                <li><b>Preparación del gráfico:</b> Definimos un lienzo amplio en Matplotlib (<code>figsize=(20, 10)</code>) para permitir la lectura clara de cada nodo.</li>
+                <li><b>Llamada a <code>plot_tree</code>:</b> Le pasamos el modelo podado, las 13 columnas clínicas (<code>feature_names</code>) y las etiquetas diagnósticas (<code>['Sano', 'Cardiopatia']</code>).</li>
+                <li><b>Coloreado inteligente:</b> Activamos <code>filled=True</code> para que los nodos se pinten de azul cuando predomina cardiopatía y de naranja cuando predomina paciente sano.</li>
+                <li><b>Resultado visible:</b> Se despliega el diagrama de flujo jerárquico completo con sus 3 niveles y <b>8 hojas terminales de decisión</b>.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• Explicabilidad de "Caja Blanca":</b> En medicina, un doctor jamás autorizaría un procedimiento quirúrgico basado en un algoritmo que no puede explicar. <code>plot_tree</code> permite que cualquier cardiólogo audite los umbrales numéricos exactos paso a paso.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan qué significa el color de las cajas: <i>«La intensidad del color representa la pureza del nodo: azul fuerte indica certeza de cardiopatía y naranja/ámbar indica certeza de paciente sano»</i>.
+                <b>• Explicabilidad médica indispensable (Caja Blanca):</b> En el sector salud, ningún médico autorizaría un tratamiento invasivo basado en un modelo que no puede justificar su razonamiento. Este paso convierte las operaciones matemáticas del modelo en un diagrama visual 100% auditable.<br>
+                <b>• Reglas descubiertas en nuestro caso:</b> El árbol muestra un camino transparente: si el paciente tiene talasemia normal (<code>thal &le; 4.5</code>) y no tiene arterias bloqueadas en la fluoroscopia (<code>ca &le; 0.5</code>), cae en una hoja con <b>más del 95% de probabilidad de estar sano</b>. Si hay alteración en talio y dolor de pecho asintomático, la probabilidad de cardiopatía supera el 90%.
               </div>
             </div>
           </div>
@@ -814,31 +777,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>La matriz de confusión evalúa los 61 pacientes de prueba nunca antes vistos:</li>
-                <li><b>Verdaderos Negativos (TN = 29):</b> 29 sanos clasificados como sanos.</li>
-                <li><b>Falsos Positivos (FP = 4):</b> 4 sanos que recibieron una falsa alarma.</li>
-                <li><b>Falsos Negativos (FN = 4):</b> 4 cardiópatas que el modelo no detectó.</li>
-                <li><b>Verdaderos Positivos (TP = 24):</b> 24 cardiópatas detectados a tiempo.</li>
-                <li><b>Sensibilidad (Recall):</b> $\mathbf{85.71\%}$ (atrapa a 24 de los 28 enfermos reales).</li>
+                <li><b>Generación de predicciones:</b> Usamos el árbol para diagnosticar a los 61 pacientes de prueba (<code>y_pred = clf.predict(X_test)</code>).</li>
+                <li><b>Construcción de la matriz:</b> Ejecutamos <code>confusion_matrix(y_test, y_pred)</code> cruzando el diagnóstico médico real contra la predicción del modelo.</li>
+                <li><b>Cálculo de métricas clínicas:</b> Computamos Exactitud, Precisión, Especificidad y Sensibilidad (*Recall* = $\frac{TP}{TP+FN}$).</li>
+                <li><b>Resultado visible:</b> La matriz desglosa: <b>29 Verdaderos Negativos</b>, <b>4 Falsos Positivos</b>, <b>4 Falsos Negativos</b> y <b>24 Verdaderos Positivos</b>, alcanzando un <b>Recall del 85.71%</b>.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• La asimetría del riesgo clínico:</b> Los dos tipos de error no valen lo mismo:
-                <br>— Un <b>Falso Positivo (FP)</b> provoca un susto y se descarta con un examen secundario.
-                <br>— Un <b>Falso Negativo (FN)</b> envía a un paciente infartado a su casa diciéndole que no tiene nada. <b>Ese error cuesta vidas.</b>
-                <br>Por eso en medicina diagnóstica el <b>Recall</b> ($TP / (TP+FN)$) es la métrica rectora.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Frase defensiva: <i>«En salud, optimizar solo por Accuracy global es negligente. Un modelo con 90% de exactitud que tenga un Recall bajo dejaría morir a enfermos; por ello auditamos el Recall (85.71%)»</i>.
+                <b>• Los errores médicos no tienen el mismo costo:</b> Un <b>Falso Positivo (FP)</b> alarma al paciente pero se desmiente con un segundo examen. En cambio, un <b>Falso Negativo (FN)</b> envía a un enfermo a su casa diciéndole que está sano, lo que puede provocar un infarto mortal.<br>
+                <b>• Por qué priorizamos el Recall en nuestro caso:</b> Guiarse únicamente por el Accuracy global es peligroso en medicina. Auditamos la matriz para garantizar que el Recall sea elevado (<b>85.71%</b>), confirmando que el árbol atrapa con éxito a 24 de los 28 enfermos reales del grupo de prueba.
               </div>
             </div>
           </div>
@@ -882,29 +834,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>El ranking de las 5 variables que concentran el <b>100% del poder de decisión</b> del árbol:</li>
-                <li><b>thal (Talasemia / Perfusión de Talio):</b> Explica el <b>53.7%</b> del diagnóstico.</li>
-                <li><b>cp (Tipo de dolor torácico):</b> Explica el <b>19.4%</b>.</li>
-                <li><b>ca (Vasos coloreados por fluoroscopia):</b> Explica el <b>16.9%</b>.</li>
-                <li><b>oldpeak (Depresión del segmento ST):</b> Explica el <b>6.7%</b>.</li>
-                <li><b>age (Edad del paciente):</b> Explica el <b>3.3%</b>.</li>
+                <li><b>Extracción de pesos:</b> Leemos el atributo <code>clf.feature_importances_</code> que contiene la reducción media de impureza (MDI) de cada predictor.</li>
+                <li><b>Estructuración y ordenamiento:</b> Asociamos cada peso a su nombre de variable y ordenamos las 13 columnas de mayor a menor importancia.</li>
+                <li><b>Graficación de barras:</b> Trazamos un gráfico de barras horizontales con Seaborn para visualizar el porcentaje explicativo de cada síntoma.</li>
+                <li><b>Resultado visible:</b> Se comprueba que 5 variables explican el 100% de las decisiones: <b>thal (53.7%)</b>, <b>cp (19.4%)</b>, <b>ca (16.9%)</b>, <b>oldpeak (6.7%)</b> y <b>age (3.3%)</b>.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Cómo se calcula el MDI (Gini Importance)?</b> Cada vez que una variable se usa para cortar un nodo, reduce la impureza de Gini ($\Delta I$). El MDI suma todas esas reducciones ponderadas por cuántos pacientes atravesaron dicho nodo.<br>
-                <b>• Hallazgo de ingeniería:</b> Las otras 8 variables del dataset no fueron necesarias en este árbol podado. Esto permite a una clínica ahorrar dinero eliminando análisis innecesarios.
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan qué variable manda en el diagnóstico: <i>«La perfusión miocárdica (thal) y el dolor torácico (cp) concentran más del 73% del poder explicativo del modelo CART»</i>.
+                <b>• Identificar qué variables mandan en el diagnóstico:</b> El método MDI cuantifica cuánta impureza de Gini eliminó cada variable a lo largo de todas las bifurcaciones del árbol, ponderada por la cantidad de pacientes que pasaron por esos nodos.<br>
+                <b>• Impacto práctico en nuestro caso:</b> Las 3 variables principales (perfusión de talio, tipo de dolor de pecho y vasos por fluoroscopia) concentran el <b>90% de la capacidad diagnóstica</b>. Esto demuestra al centro médico que no se requieren decenas de exámenes costosos: con solo priorizar estos estudios clave se obtiene un diagnóstico certero.
               </div>
             </div>
           </div>
@@ -944,31 +887,20 @@
           <!-- Panel Derecho -->
           <div class="explanation-card">
             <div class="section-block">
-              <div class="section-label"><i data-lucide="eye" style="width: 14px;"></i> 1. ¿Qué estamos viendo en la captura?</div>
+              <div class="section-label"><i data-lucide="play-circle" style="width: 14px;"></i> 1. ¿Qué es lo que se ejecuta? (Secuencia paso a paso en palabras simples)</div>
               <ul class="bullet-points">
-                <li>Ingresamos un paciente con cuadro coronario agudo: 63 años, dolor asintomático (<code>cp=4</code>), talasemia con defecto fijo (<code>thal=6.0</code>) y depresión ST severa (<code>oldpeak=2.3</code>).</li>
-                <li>El modelo ejecutó <code>predict_proba</code> y devolvió:</li>
-                <li>Probabilidad de Sano: <b>1.79%</b></li>
-                <li>Probabilidad de Cardiopatía: <b>98.21%</b></li>
-                <li>Diagnóstico final: <b>🔴 ALTO RIESGO (Cardiopatía Detectada)</b>.</li>
+                <li><b>Ingreso del paciente:</b> Creamos un vector con los datos clínicos de un paciente que llega a urgencias: 63 años, dolor asintomático (<code>cp=4</code>), talasemia con defecto fijo (<code>thal=6.0</code>) y depresión ST de 2.3 mm (<code>oldpeak=2.3</code>).</li>
+                <li><b>Cálculo de probabilidades:</b> Llamamos a <code>clf.predict_proba()</code> para obtener el desglose porcentual de certidumbre diagnóstica.</li>
+                <li><b>Veredicto final:</b> Ejecutamos <code>clf.predict()</code> y formateamos el resultado con alertas visuales en consola.</li>
+                <li><b>Resultado visible:</b> En menos de 0.05 ms, el modelo imprime: <b>Probabilidad de Sano = 1.79%</b>, <b>Probabilidad de Cardiopatía = 98.21%</b>, emitiendo la alerta clínica de <b>🔴 ALTO RIESGO: Cardiopatía Detectada</b>.</li>
               </ul>
             </div>
 
             <div class="concept-card">
-              <div class="concept-title"><i data-lucide="brain-circuit" style="width: 14px;"></i> 2. ¿Por qué se hace esto y qué pasa por dentro?</div>
+              <div class="concept-title"><i data-lucide="help-circle" style="width: 14px;"></i> 2. ¿Por qué se tiene que hacer esto? (En nuestro caso)</div>
               <div class="concept-desc">
-                <b>• ¿Cómo viaja el paciente por el árbol?</b> Solo hace 3 comparaciones escalares booleanas:
-                <br>1. <code>thal = 6.0 > 4.5</code> $\to$ Va por la rama derecha de cardiopatía.
-                <br>2. <code>cp = 4 > 3.5</code> $\to$ Dolor torácico tipo 4 confirma sospecha.
-                <br>3. <code>oldpeak = 2.3 > 1.5</code> $\to$ Aterriza en la hoja isquémica final ($98.2\%$).
-                <br><b>• Tiempo de inferencia:</b> Tarda menos de <b>0.05 milisegundos</b> ($O(\text{profundidad}) \le 3$).
-              </div>
-            </div>
-
-            <div class="tip-callout">
-              <div class="tip-header"><i data-lucide="lightbulb" style="width: 14px;"></i> 3. Clave para responder ante el profesor</div>
-              <div class="tip-content">
-                Si te preguntan por la viabilidad de poner esto en un hospital: <i>«Un árbol podado tiene un costo computacional de inferencia de orden $O(\text{profundidad})$, lo que permite ejecutarlo en tiempo real en dispositivos médicos portátiles o microcontroladores sin conexión a servidores»</i>.
+                <b>• Simular el despliegue del modelo en producción:</b> El propósito de entrenar el algoritmo es que sirva en tiempo real cuando un paciente ingresa a la sala de emergencias con sospecha de infarto.<br>
+                <b>• Por qué funciona con tanta velocidad en nuestro caso:</b> Para evaluar a este paciente, el árbol solo realiza 3 comparaciones simples: <code>thal > 4.5</code> $\to$ <code>cp > 3.5</code> $\to$ <code>oldpeak > 1.5</code>. Al tener un costo de cómputo mínimo de $O(\text{profundidad})$, puede ejecutarse instantáneamente en cualquier monitor o tableta médica sin depender de internet ni servidores pesados.
               </div>
             </div>
           </div>
