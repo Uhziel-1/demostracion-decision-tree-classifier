@@ -105,7 +105,116 @@
       </section>
 
       <!-- ========================================================================
-           SLIDE 02: PASO 1 - INGESTA, LIMPIEZA Y BINARIZACIÓN
+           SLIDE 02: ANATOMÍA Y DICCIONARIO DE DATOS (CLEVELAND HEART DISEASE)
+           ======================================================================== -->
+      <section class="slide" id="slide-data-dict">
+        <div class="slide-header">
+          <span class="slide-tag"><i data-lucide="table-2" style="width: 13px; height: 13px;"></i> 02 &middot; Contexto Clínico</span>
+          <h2 class="slide-title">Anatomía de los Datos: ¿Qué significa cada variable en Cleveland?</h2>
+          <p class="slide-subtitle">Comprensión de los 13 atributos fisiológicos y la variable objetivo antes de analizar el código y los árboles.</p>
+        </div>
+
+        <div class="data-dict-grid">
+          <!-- Categoría 1: Demográficos y Vitales -->
+          <div class="data-cat-card">
+            <div class="data-cat-header">
+              <span class="data-cat-title"><i data-lucide="user-check" style="width: 15px;"></i> 1. Datos Demográficos y Vitales</span>
+              <span class="badge" style="font-size: 0.68rem; color: var(--text-muted);">5 Variables</span>
+            </div>
+            <div class="var-list">
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">age</span> <span class="var-name">Edad del Paciente</span> <span class="var-type">(Numérica)</span></div>
+                <div class="var-desc">Rango de 29 a 77 años. Factor biológico no modificable de riesgo cardiovascular.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">sex</span> <span class="var-name">Sexo Biológico</span> <span class="var-type">(Binaria)</span></div>
+                <div class="var-desc"><b>1 = Masculino</b>, <b>0 = Femenino</b>. Mayor incidencia histórica en hombres de mediana edad.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">trestbps</span> <span class="var-name">Presión Arterial en Reposo</span> <span class="var-type">(Numérica)</span></div>
+                <div class="var-desc">Presión sistólica medida en mm Hg al ingresar al hospital (valores $>140$ alertan hipertensión).</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">chol</span> <span class="var-name">Colesterol Sérico</span> <span class="var-type">(Numérica)</span></div>
+                <div class="var-desc">Nivel de colesterol en mg/dL (niveles $>200$ son factor de placa aterosclerótica).</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">fbs</span> <span class="var-name">Glucemia en Ayunas</span> <span class="var-type">(Binaria)</span></div>
+                <div class="var-desc">¿Azúcar en sangre $>120\text{ mg/dL}$? <b>1 = Sí</b>, <b>0 = No</b> (indicador de diabetes o prediabetes).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría 2: Dolor y Esfuerzo -->
+          <div class="data-cat-card">
+            <div class="data-cat-header">
+              <span class="data-cat-title"><i data-lucide="activity" style="width: 15px;"></i> 2. Dolor Torácico y Esfuerzo Físico</span>
+              <span class="badge" style="font-size: 0.68rem; color: var(--text-muted);">3 Variables</span>
+            </div>
+            <div class="var-list">
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag" style="color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.3);">cp</span> <span class="var-name">Tipo de Dolor de Pecho</span> <span class="var-type">(Categórica 1-4)</span></div>
+                <div class="var-desc"><b>1:</b> Angina típica de esfuerzo &middot; <b>2:</b> Angina atípica &middot; <b>3:</b> Dolor no anginoso &middot; <b>4: Asintomático</b> (<i>¡Infartos silentes muy peligrosos!</i>).</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">thalach</span> <span class="var-name">Frecuencia Cardíaca Máxima</span> <span class="var-type">(Numérica)</span></div>
+                <div class="var-desc">Pulsaciones máximas por minuto alcanzadas durante la prueba de esfuerzo en cinta ergométrica.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">exang</span> <span class="var-name">Angina Inducida por Ejercicio</span> <span class="var-type">(Binaria)</span></div>
+                <div class="var-desc">¿El esfuerzo físico provocó dolor en el pecho? <b>1 = Sí</b>, <b>0 = No</b>.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría 3: Electrocardiograma (ECG) -->
+          <div class="data-cat-card">
+            <div class="data-cat-header">
+              <span class="data-cat-title"><i data-lucide="heart-pulse" style="width: 15px;"></i> 3. Registro Electrocardiográfico (ECG)</span>
+              <span class="badge" style="font-size: 0.68rem; color: var(--text-muted);">3 Variables</span>
+            </div>
+            <div class="var-list">
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">restecg</span> <span class="var-name">ECG en Reposo</span> <span class="var-type">(Categórica 0-2)</span></div>
+                <div class="var-desc"><b>0:</b> Normal &middot; <b>1:</b> Onda ST-T anormal &middot; <b>2:</b> Hipertrofia ventricular izquierda probable.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag" style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3);">oldpeak</span> <span class="var-name">Depresión del Segmento ST</span> <span class="var-type">(Numérica)</span></div>
+                <div class="var-desc">Caída en mm del segmento ST provocada por ejercicio vs reposo. <b>Marcador cardinal de falta de oxígeno (isquemia)</b>.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag">slope</span> <span class="var-name">Pendiente del Segmento ST</span> <span class="var-type">(Categórica 1-3)</span></div>
+                <div class="var-desc">Inclinación en máximo esfuerzo: <b>1:</b> Ascendente (normal) &middot; <b>2:</b> Plana (alerta) &middot; <b>3:</b> Descendente (isquemia grave).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría 4: Pruebas Especializadas y Target -->
+          <div class="data-cat-card">
+            <div class="data-cat-header">
+              <span class="data-cat-title"><i data-lucide="microscope" style="width: 15px;"></i> 4. Pruebas Especializadas y Target</span>
+              <span class="badge" style="font-size: 0.68rem; color: var(--text-muted);">3 Variables</span>
+            </div>
+            <div class="var-list">
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag" style="color: var(--accent-cyan); border-color: rgba(56, 189, 248, 0.3);">ca</span> <span class="var-name">Vasos por Fluoroscopia</span> <span class="var-type">(Discreta 0-3)</span></div>
+                <div class="var-desc">Número de arterias coronarias principales coloreadas bajo rayos X. <b>A más vasos teñidos, mayor bloqueo arterial</b>.</div>
+              </div>
+              <div class="var-row">
+                <div class="var-head"><span class="var-tag" style="color: var(--accent-cyan); border-color: rgba(56, 189, 248, 0.3);">thal</span> <span class="var-name">Perfusión Miocárdica (Talio)</span> <span class="var-type">(Categórica)</span></div>
+                <div class="var-desc">Centellograma cardíaco: <b>3.0:</b> Normal &middot; <b>6.0:</b> Defecto fijo (tejido cicatrizado) &middot; <b>7.0:</b> Defecto reversible (arteria parcialmente tapada).</div>
+              </div>
+              <div class="var-row" style="background: rgba(16, 185, 129, 0.08); padding: 0.35rem 0.5rem; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.25);">
+                <div class="var-head"><span class="var-tag" style="background: var(--accent-emerald); color: #080c14;">target</span> <span class="var-name" style="color: var(--accent-emerald);">Diagnóstico Final (Objetivo)</span> <span class="var-type">(Binaria)</span></div>
+                <div class="var-desc" style="color: #fff;"><b>0 = Sano</b> (54.1%, sin obstrucción coronaria significativa) &middot; <b>1 = Cardiopatía</b> (45.9%, presencia de enfermedad $>50\%$ estenosis).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================
+           SLIDE 03: PASO 1 - INGESTA, LIMPIEZA Y BINARIZACIÓN
            ======================================================================== -->
       <section class="slide" id="slide-2">
         <div class="slide-header">
@@ -774,7 +883,7 @@
         <button id="prev-btn" class="btn-nav" disabled>
           <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i> Anterior
         </button>
-        <span id="slide-counter" class="slide-counter">01 / 12</span>
+        <span id="slide-counter" class="slide-counter">01 / 13</span>
         <button id="next-btn" class="btn-nav">
           Siguiente <i data-lucide="chevron-right" style="width: 15px; height: 15px;"></i>
         </button>
